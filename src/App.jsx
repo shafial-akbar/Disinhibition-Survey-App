@@ -1,4 +1,4 @@
-import {useMemo,useState} from 'react';
+import React, {useMemo,useState} from 'react';
 import {ArrowLeft,ArrowRight,CheckCircle2,ShieldCheck,Sparkles,ClipboardList} from 'lucide-react';
 import {configured,supabase} from './lib/supabase';
 import {sections,likert} from './data/questions';
