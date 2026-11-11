@@ -128,6 +128,16 @@ export default function ParticipantInfoStep({ onStart, onGoWithdraw }) {
         </p>
       </div>
 
+      <div className="info-section">
+        <div className="info-section-title">
+          <ShieldCheck size={16} />
+          <h3>Data Storage, Hosting, Access and Retention</h3>
+        </div>
+        <p>
+          Your questionnaire responses will be stored in a secure database hosted by Online Supabase powered by Postgre. The online application is hosted through Google Cloud infrastructure. Your responses will be accessible to the principal investigator and the authorised research supervisor for academic research purposes. Your research data will be retained for five years after completion of the study and securely deleted thereafter, subject to applicable university requirements. You may request deletion of your submitted response within seven calendar days using your unique withdrawal code.
+        </p>
+      </div>
+
       <div className="contact-section">
         <div className="info-section-title">
           <GraduationCap size={16} />
