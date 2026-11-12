@@ -92,7 +92,7 @@ export function clearSessionSubmissionReceipt() {
   }
 }
 
-function recordFallbackHashEntry(hash, submittedAt, withdrawalDeadline) {
+export function recordFallbackHashEntry(hash, submittedAt, withdrawalDeadline) {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
     const raw = window.localStorage.getItem(FALLBACK_HASH_LEDGER_KEY);

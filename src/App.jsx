@@ -2,12 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { configured, supabase } from './lib/supabase';
 import { sections } from './data/questions';
 import {
-  submitSurveyWithWithdrawalCode,
-  requestWithdrawalDeletion,
-  buildWithdrawalReceiptText,
+  submitSurveyResponse,
   saveSessionSubmissionReceipt,
   loadSessionSubmissionReceipt,
   clearSessionSubmissionReceipt,
+} from './lib/surveyApi';
+import {
+  requestWithdrawalDeletion,
+  buildWithdrawalReceiptText,
   normalizeWithdrawalCode,
 } from './lib/withdrawal';
 
@@ -169,7 +171,7 @@ export default function App() {
         ...p,
         ...Object.fromEntries(all.map(k => [k, Number(a[k])])),
       };
-      const serverReceipt = await submitSurveyWithWithdrawalCode(supabase, payload);
+      const serverReceipt = await submitSurveyResponse(supabase, payload);
       setReceipt(serverReceipt);
       saveSessionSubmissionReceipt(serverReceipt);
       B(false);

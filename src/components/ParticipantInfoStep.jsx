@@ -138,6 +138,7 @@ export default function ParticipantInfoStep({ onStart, onGoWithdraw }) {
         </p>
       </div>
 
+      /*
       <div className="contact-section">
         <div className="info-section-title">
           <GraduationCap size={16} />
@@ -164,6 +165,8 @@ export default function ParticipantInfoStep({ onStart, onGoWithdraw }) {
           </div>
         </div>
       </div>
+      
+      */
 
       <button type="button" className="primary wide" onClick={onStart}>
         Proceed to Consent &amp; Eligibility <ArrowRight size={17} />
