@@ -138,36 +138,6 @@ export default function ParticipantInfoStep({ onStart, onGoWithdraw }) {
         </p>
       </div>
 
-      /*
-      <div className="contact-section">
-        <div className="info-section-title">
-          <GraduationCap size={16} />
-          <h3>Contact Information</h3>
-        </div>
-        <div className="contact-grid">
-          <div className="contact-card">
-            <small>PRINCIPAL INVESTIGATOR</small>
-            <b>Md. Shafial Akbar</b>
-            <span>Professional MS in Psychology</span>
-            <span>Department of Psychology</span>
-            <span>University of Dhaka</span>
-            <a href="mailto:shafialakbar52@gmail.com" className="contact-email">
-              <Mail size={13} /> shafialakbar52@gmail.com
-            </a>
-          </div>
-
-          <div className="contact-card">
-            <small>RESEARCH SUPERVISOR</small>
-            <b>Sanchary Prativa</b>
-            <span>Assistant Professor</span>
-            <span>Department of Psychology</span>
-            <span>University of Dhaka</span>
-          </div>
-        </div>
-      </div>
-      
-      */
-
       <button type="button" className="primary wide" onClick={onStart}>
         Proceed to Consent &amp; Eligibility <ArrowRight size={17} />
       </button>
