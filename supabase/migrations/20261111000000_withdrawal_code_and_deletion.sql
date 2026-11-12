@@ -3,7 +3,7 @@
 
 alter table public.survey_responses
   add column if not exists withdrawal_code_hash text unique,
-  add column if not exists withdrawal_deadline timestamptz not null default (now() + interval '7 days'),
+  add column if not exists withdrawal_deadline timestamptz not null default (now() + interval '3 days'),
   add column if not exists locked_for_analysis boolean not null default false;
 
 create index if not exists idx_survey_responses_withdrawal_hash
@@ -67,7 +67,7 @@ declare
   v_code text;
   v_hash text;
   v_now timestamptz := clock_timestamp();
-  v_deadline timestamptz := v_now + interval '7 days';
+  v_deadline timestamptz := v_now + interval '3 days';
   v_attempts integer := 0;
 begin
   if p_payload is null then
@@ -219,14 +219,14 @@ begin
     );
   end if;
 
-  if v_now > v_deadline or v_now > (v_submitted_at + interval '7 days') then
+  if v_now > v_deadline or v_now > (v_submitted_at + interval '3 days') then
     update public.survey_responses
     set locked_for_analysis = true
     where id = v_target_id;
 
     return jsonb_build_object(
       'status', 'expired',
-      'message', 'The 7-day withdrawal period has expired. Your response is no longer eligible for deletion through the withdrawal code because it has been locked for research analysis.'
+      'message', 'The 3-day withdrawal period has expired. Your response is no longer eligible for deletion through the withdrawal code because it has been locked for research analysis.'
     );
   end if;
 

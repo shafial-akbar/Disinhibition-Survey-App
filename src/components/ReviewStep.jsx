@@ -9,7 +9,7 @@ export default function ReviewStep({ profile, back, submit, busy }) {
       <h2>Review and submit</h2>
       <p className="muted">
         Please confirm that you have completed the questionnaire. Upon submission, you will receive
-        a one-time Withdrawal Code valid for 7 calendar days.
+        a one-time Withdrawal Code valid for 3 calendar days.
       </p>
 
       <div className="review">
@@ -24,7 +24,7 @@ export default function ReviewStep({ profile, back, submit, busy }) {
       <aside>
         <ShieldCheck size={18} /> By submitting, you confirm that your answers reflect your own
         experience and contain no sensitive personal information. Make sure to save your Withdrawal
-        Code on the next screen if you may wish to withdraw within 7 days.
+        Code on the next screen if you may wish to withdraw within 3 days.
       </aside>
 
       <div className="nav">

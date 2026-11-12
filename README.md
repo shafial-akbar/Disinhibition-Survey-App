@@ -1,6 +1,6 @@
 # Research Survey App
 
-React + Vite participant-only survey with Supabase PostgreSQL, bilingual (English + Bengali) measurement scales, and a 7-calendar-day Participant Withdrawal Code & Data Deletion system.
+React + Vite participant-only survey with Supabase PostgreSQL, bilingual (English + Bengali) measurement scales, and a 3-calendar-day Participant Withdrawal Code & Data Deletion system.
 
 ## Run locally
 1. Install Node.js 18.18+ (Node 20/22 LTS recommended).

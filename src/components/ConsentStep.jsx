@@ -44,16 +44,16 @@ export default function ConsentStep({
           </li>
         </ul>
         <div className="consent-policy">
-          <strong>Withdrawal &amp; 7-Day Data Deletion Policy:</strong>
+          <strong>Withdrawal &amp; 3-Day Data Deletion Policy:</strong>
           <p>
             After submitting your response, you will receive a unique{' '}
             <strong>Withdrawal Code</strong>. You must save this code securely because it is not
             stored in plain text and cannot be retrieved later. You may request deletion of your
-            submitted response within <strong>7 calendar days</strong> on the{' '}
+            submitted response within <strong>3 calendar days</strong> on the{' '}
             <button type="button" className="text-link" onClick={onGoWithdraw}>
               Withdraw My Response
             </button>{' '}
-            page. After 7 calendar days, your response will be locked for research analysis.
+            page. After 3 calendar days, your response will be locked for research analysis.
           </p>
         </div>
       </div>

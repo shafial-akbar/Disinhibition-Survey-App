@@ -1,10 +1,10 @@
 const CODE_ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 const CODE_REGEX = /^WDR-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{4}-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{4}-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{4}$/;
-const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 
 export const EXPIRED_WITHDRAWAL_MESSAGE =
-  'The 7-day withdrawal period has expired. Your response is no longer eligible for deletion through the withdrawal code because it has been locked for research analysis.';
+  'The 3-day withdrawal period has expired. Your response is no longer eligible for deletion through the withdrawal code because it has been locked for research analysis.';
 
 export const INVALID_CODE_MESSAGE =
   'Invalid withdrawal code. Please check the code and try again.';
@@ -133,10 +133,10 @@ export function buildWithdrawalReceiptText({ withdrawal_code, submitted_at, with
     '',
     'Please save this code securely. You will need it if you wish to request deletion of your submitted response.',
     '',
-    'You may request deletion within 7 calendar days from the date and time of submission. After this period, your response will be locked for research analysis and individual deletion using the withdrawal code will no longer be available.',
+    'You may request deletion within 3 calendar days from the date and time of submission. After this period, your response will be locked for research analysis and individual deletion using the withdrawal code will no longer be available.',
     '',
     `Submission Timestamp (Server): ${formatServerTimestamp(submitted_at)} (${submitted_at})`,
-    `7-Day Withdrawal Deadline (Server): ${formatServerTimestamp(withdrawal_deadline)} (${withdrawal_deadline})`,
+    `3-Day Withdrawal Deadline (Server): ${formatServerTimestamp(withdrawal_deadline)} (${withdrawal_deadline})`,
     '',
   ].join('\n');
 }
@@ -168,9 +168,7 @@ export function generateCryptographicCode() {
  * Submits a survey response:
  * 1. First attempts the atomic server-side RPC `submit_survey_response`.
  * 2. If the Supabase database has not yet had the RPC migration run, falls back to
- *    inserting into `public.survey_responses` (first trying with `withdrawal_code_hash` + `withdrawal_deadline`,
- *    and if those columns are not yet added, inserting the standard `survey_responses` columns)
- *    so that participant submissions never fail.
+ *    inserting into `public.survey_responses`.
  */
 export async function submitSurveyWithWithdrawalCode(supabaseClient, payload) {
   if (!supabaseClient) {
@@ -191,7 +189,6 @@ export async function submitSurveyWithWithdrawalCode(supabaseClient, payload) {
       };
     }
 
-    // If the error is a payload validation failure on the mock/server RPC and `from` is not available, throw
     if (typeof supabaseClient.from !== 'function') {
       throw new Error(error?.message || 'Submission failed.');
     }
@@ -202,9 +199,8 @@ export async function submitSurveyWithWithdrawalCode(supabaseClient, payload) {
   const hash = await sha256Hex(code);
   const nowMs = Date.now();
   const submittedAtIso = new Date(nowMs).toISOString();
-  const deadlineIso = new Date(nowMs + SEVEN_DAYS_MS).toISOString();
+  const deadlineIso = new Date(nowMs + THREE_DAYS_MS).toISOString();
 
-  // Try inserting with withdrawal_code_hash and withdrawal_deadline columns first
   const extendedPayload = {
     ...payload,
     submitted_at: submittedAtIso,
@@ -239,8 +235,7 @@ export async function submitSurveyWithWithdrawalCode(supabaseClient, payload) {
     };
   }
 
-  // Stage 4: If Supabase rejected insert due to missing RLS policy (e.g. 42501 before running the full SQL script),
-  // store in the local fallback ledger so the participant flow completes without blocking.
+  // Stage 4: Local fallback ledger if RLS policy has not yet been applied in SQL Editor
   recordFallbackHashEntry(hash, submittedAtIso, deadlineIso);
   return {
     withdrawal_code: code,
@@ -375,7 +370,7 @@ export function createServerMockSupabase({ nowFn = () => Date.now() } = {}) {
 
         const nowMs = nowFn();
         const submittedAtIso = new Date(nowMs).toISOString();
-        const deadlineIso = new Date(nowMs + SEVEN_DAYS_MS).toISOString();
+        const deadlineIso = new Date(nowMs + THREE_DAYS_MS).toISOString();
         const id = crypto.randomUUID();
 
         const record = {
@@ -454,7 +449,7 @@ export function createServerMockSupabase({ nowFn = () => Date.now() } = {}) {
         const deadlineMs = new Date(record.withdrawal_deadline).getTime();
         const submittedMs = new Date(record.submitted_at).getTime();
 
-        if (nowMs > deadlineMs || nowMs > submittedMs + SEVEN_DAYS_MS) {
+        if (nowMs > deadlineMs || nowMs > submittedMs + THREE_DAYS_MS) {
           record.locked_for_analysis = true;
           return {
             data: { status: 'expired', message: EXPIRED_WITHDRAWAL_MESSAGE },

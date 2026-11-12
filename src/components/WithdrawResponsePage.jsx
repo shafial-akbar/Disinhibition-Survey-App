@@ -24,7 +24,7 @@ export default function WithdrawResponsePage({
       <h2>Withdraw My Response</h2>
       <p className="muted">
         Enter the unique Withdrawal Code generated when you submitted your questionnaire. Requests
-        submitted within <strong>7 calendar days</strong> of the server submission timestamp will
+        submitted within <strong>3 calendar days</strong> of the server submission timestamp will
         permanently delete your questionnaire response.
       </p>
 
@@ -90,7 +90,7 @@ export default function WithdrawResponsePage({
           <div>
             <strong>Withdrawal Period Expired</strong>
             <p>
-              The 7-day withdrawal period has expired. Your response is no longer eligible for
+              The 3-day withdrawal period has expired. Your response is no longer eligible for
               deletion through the withdrawal code because it has been locked for research analysis.
             </p>
           </div>
@@ -108,7 +108,7 @@ export default function WithdrawResponsePage({
 
       <aside>
         <ShieldCheck size={18} /> For participant privacy, withdrawal codes are stored only as
-        cryptographic hashes. Once a response is deleted or after 7 calendar days have elapsed, the
+        cryptographic hashes. Once a response is deleted or after 3 calendar days have elapsed, the
         code can no longer be used.
       </aside>
     </div>

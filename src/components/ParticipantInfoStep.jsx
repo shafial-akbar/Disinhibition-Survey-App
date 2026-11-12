@@ -115,7 +115,7 @@ export default function ParticipantInfoStep({ onStart, onGoWithdraw }) {
         </div>
         <p>
           After submitting the questionnaire, you will receive a unique withdrawal code. You may
-          request deletion of your submitted response within <strong>seven calendar days</strong> by
+          request deletion of your submitted response within <strong>three calendar days</strong> by
           entering this code on the designated{' '}
           <button type="button" className="text-link" onClick={onGoWithdraw}>
             Withdraw My Response
@@ -123,7 +123,7 @@ export default function ParticipantInfoStep({ onStart, onGoWithdraw }) {
           page.
         </p>
         <p>
-          After the seven-day withdrawal period, individual responses will be locked for research
+          After the three-day withdrawal period, individual responses will be locked for research
           analysis and cannot be deleted through the withdrawal-code mechanism.
         </p>
       </div>
@@ -134,7 +134,7 @@ export default function ParticipantInfoStep({ onStart, onGoWithdraw }) {
           <h3>Data Storage, Hosting, Access and Retention</h3>
         </div>
         <p>
-          Your questionnaire responses will be stored in a secure database hosted by Online Supabase powered by Postgre. The online application is hosted through Google Cloud infrastructure. Your responses will be accessible to the principal investigator and the authorised research supervisor for academic research purposes. Your research data will be retained for five years after completion of the study and securely deleted thereafter, subject to applicable university requirements. You may request deletion of your submitted response within seven calendar days using your unique withdrawal code.
+          Your questionnaire responses will be stored in a secure database hosted by Online Supabase powered by Postgre. The online application is hosted through Google Cloud infrastructure. Your responses will be accessible to the principal investigator and the authorised research supervisor for academic research purposes. Your research data will be retained for five years after completion of the study and securely deleted thereafter, subject to applicable university requirements. You may request deletion of your submitted response within three calendar days using your unique withdrawal code.
         </p>
       </div>
 

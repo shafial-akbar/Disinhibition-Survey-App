@@ -42,7 +42,7 @@ test('1. Successful submission generates one unique cryptographic withdrawal cod
 
   assert.ok(isValidWithdrawalCodeFormat(receipt.withdrawal_code));
   assert.equal(receipt.submitted_at, '2026-11-11T12:00:00.000Z');
-  assert.equal(receipt.withdrawal_deadline, '2026-11-18T12:00:00.000Z');
+  assert.equal(receipt.withdrawal_deadline, '2026-11-14T12:00:00.000Z');
 
   const storedRows = mockDb._inspectResponses();
   assert.equal(storedRows.length, 1);
@@ -73,19 +73,19 @@ test('3. Receipt formatting and normalization work for Copy and Download actions
   const text = buildWithdrawalReceiptText({
     withdrawal_code: 'WDR-2345-ABCD-EFGH',
     submitted_at: '2026-11-11T12:00:00.000Z',
-    withdrawal_deadline: '2026-11-18T12:00:00.000Z',
+    withdrawal_deadline: '2026-11-14T12:00:00.000Z',
   });
 
   assert.ok(text.includes('Your response has been submitted successfully.'));
   assert.ok(text.includes('Your Withdrawal Code: WDR-2345-ABCD-EFGH'));
   assert.ok(
     text.includes(
-      'You may request deletion within 7 calendar days from the date and time of submission. After this period, your response will be locked for research analysis and individual deletion using the withdrawal code will no longer be available.'
+      'You may request deletion within 3 calendar days from the date and time of submission. After this period, your response will be locked for research analysis and individual deletion using the withdrawal code will no longer be available.'
     )
   );
 });
 
-test('4. Valid withdrawal code deletes only its corresponding response within 7 calendar days', async () => {
+test('4. Valid withdrawal code deletes only its corresponding response within 3 calendar days', async () => {
   let currentNow = Date.parse('2026-11-11T12:00:00.000Z');
   const mockDb = createServerMockSupabase({ nowFn: () => currentNow });
 
@@ -100,8 +100,8 @@ test('4. Valid withdrawal code deletes only its corresponding response within 7 
 
   assert.equal(mockDb._inspectResponses().length, 2);
 
-  // Advance server clock by 6 days, 23 hours, 59 minutes (still within 7-day window)
-  currentNow = Date.parse('2026-11-18T11:59:59.000Z');
+  // Advance server clock by 2 days, 23 hours, 59 minutes (still within 3-day window)
+  currentNow = Date.parse('2026-11-14T11:59:59.000Z');
 
   const delRes = await requestWithdrawalDeletion(mockDb, participant1.withdrawal_code, {
     clientKey: 'client_1',
@@ -134,14 +134,14 @@ test('5. Invalid code cannot delete anything and does not leak participant infor
   assert.equal(mockDb._inspectResponses().length, 1);
 });
 
-test('6. Expired code (> 7 calendar days on server clock) is rejected and locks the response for analysis', async () => {
+test('6. Expired code (> 3 calendar days on server clock) is rejected and locks the response for analysis', async () => {
   let currentNow = Date.parse('2026-11-11T12:00:00.000Z');
   const mockDb = createServerMockSupabase({ nowFn: () => currentNow });
 
   const receipt = await submitSurveyWithWithdrawalCode(mockDb, createSamplePayload());
 
-  // Advance server clock to 1 second past the 7-calendar-day deadline
-  currentNow = Date.parse('2026-11-18T12:00:01.000Z');
+  // Advance server clock to 1 second past the 3-calendar-day deadline
+  currentNow = Date.parse('2026-11-14T12:00:01.000Z');
 
   const expRes = await requestWithdrawalDeletion(mockDb, receipt.withdrawal_code, {
     clientKey: 'client_exp',

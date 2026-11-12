@@ -7,7 +7,7 @@ import {
   clearSessionSubmissionReceipt,
 } from './withdrawal';
 
-const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
 export {
   saveSessionSubmissionReceipt,
@@ -49,7 +49,7 @@ export async function submitSurveyResponse(supabaseClient, payload) {
   const hash = await sha256Hex(code);
   const nowMs = Date.now();
   const submittedAtIso = new Date(nowMs).toISOString();
-  const deadlineIso = new Date(nowMs + SEVEN_DAYS_MS).toISOString();
+  const deadlineIso = new Date(nowMs + THREE_DAYS_MS).toISOString();
 
   const extendedPayload = {
     ...payload,

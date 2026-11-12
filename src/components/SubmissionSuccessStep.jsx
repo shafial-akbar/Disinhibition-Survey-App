@@ -64,7 +64,7 @@ export default function SubmissionSuccessStep({
           deletion of your submitted response.
         </p>
         <p>
-          You may request deletion within 7 calendar days from the date and time of submission.
+          You may request deletion within 3 calendar days from the date and time of submission.
           After this period, your response will be locked for research analysis and individual
           deletion using the withdrawal code will no longer be available.
         </p>
@@ -77,7 +77,7 @@ export default function SubmissionSuccessStep({
             value={formatServerTimestamp(receipt.submitted_at)}
           />
           <Row
-            label="7-Day Withdrawal Deadline"
+            label="3-Day Withdrawal Deadline"
             value={formatServerTimestamp(receipt.withdrawal_deadline)}
           />
         </div>
