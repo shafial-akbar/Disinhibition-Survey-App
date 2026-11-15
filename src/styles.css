@@ -168,6 +168,64 @@ select {
   min-height: 430px;
 }
 
+.kicker-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.kicker-bar .kicker {
+  margin-bottom: 0;
+}
+
+.kicker-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.header-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.lang-toggle-btn {
+  background: #f1f5fc;
+  color: #1f449c;
+  border: 1.5px solid #cbd8f1;
+}
+
+.lang-toggle-btn:hover {
+  background: #e3ecfe;
+  border-color: #9cb6ea;
+}
+
+.download-both-btn {
+  background: #2b52b0;
+  color: #ffffff;
+  border: 1.5px solid #2b52b0;
+  box-shadow: 0 2px 6px rgba(43, 82, 176, 0.18);
+}
+
+.download-both-btn:hover {
+  background: #204294;
+  border-color: #204294;
+}
+
 .kicker {
   font-size: 12px;
   letter-spacing: 1.1px;
@@ -568,7 +626,57 @@ aside svg {
   color: #3e4e66;
 }
 
+.instruction-box {
+  background: #f2f6ff;
+  border: 1px solid #d2dff7;
+  border-left: 4px solid #2b52b0;
+  border-radius: 10px;
+  padding: 15px 18px;
+  margin: 0 0 22px;
+}
+
+.instruction-box p {
+  margin: 0 0 8px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #18273c;
+  font-weight: 600;
+}
+
+.instruction-box p:last-child {
+  margin-bottom: 0;
+}
+
+.primary-tool-pill {
+  display: inline-block;
+  background: #ffffff;
+  border: 1px solid #c6d6f5;
+  color: #1f449c;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.other-tool-wrap {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: #f8faff;
+  border: 1px solid #d8e2f2;
+  border-radius: 10px;
+}
+
+.field-sublabel {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #142136;
+  margin-bottom: 8px;
+}
+
 select,
+.text-input,
 .code-input {
   height: 46px;
   width: 100%;
@@ -591,6 +699,7 @@ select,
 }
 
 select:focus,
+.text-input:focus,
 .code-input:focus {
   border-color: #4f73c8;
   box-shadow: 0 0 0 3px #e6edfc;

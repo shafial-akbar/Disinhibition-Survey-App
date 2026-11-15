@@ -1,98 +1,59 @@
 import {
-  generateCryptographicCode,
-  sha256Hex,
-  recordFallbackHashEntry,
+  WARMTH_KEYS,
+  TRUST_KEYS,
+  DISCLOSURE_KEYS,
+  ALL_LIKERT_KEYS,
+  OBSOLETE_LIKERT_KEYS,
+  QUESTIONNAIRE_VERSION,
+  LEGACY_QUESTIONNAIRE_VERSION,
+  calculateSurveyScores,
+  prepareSurveySubmissionPayload,
+  submitSurveyWithWithdrawalCode,
   saveSessionSubmissionReceipt,
   loadSessionSubmissionReceipt,
   clearSessionSubmissionReceipt,
-} from './withdrawal';
+} from './withdrawal.js';
 
-const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+import {
+  ACTIVE_16_ITEM_COLUMNS,
+  LEGACY_26_ITEM_EXTRA_COLUMNS,
+  RESEARCH_EXPORT_COLUMNS_V1,
+  classifyResponseVersion,
+  filterResponsesByVersion,
+  formatResponsesToCsv,
+} from './researchExport.js';
 
 export {
+  WARMTH_KEYS,
+  TRUST_KEYS,
+  DISCLOSURE_KEYS,
+  ALL_LIKERT_KEYS,
+  OBSOLETE_LIKERT_KEYS,
+  QUESTIONNAIRE_VERSION,
+  LEGACY_QUESTIONNAIRE_VERSION,
+  ACTIVE_16_ITEM_COLUMNS,
+  LEGACY_26_ITEM_EXTRA_COLUMNS,
+  RESEARCH_EXPORT_COLUMNS_V1,
+  classifyResponseVersion,
+  filterResponsesByVersion,
+  formatResponsesToCsv,
+  calculateSurveyScores,
+  prepareSurveySubmissionPayload,
+  submitSurveyWithWithdrawalCode,
   saveSessionSubmissionReceipt,
   loadSessionSubmissionReceipt,
   clearSessionSubmissionReceipt,
 };
 
 /**
- * Submits a survey response to `public.survey_responses`:
- * 1. First attempts the atomic server-side RPC `submit_survey_response`.
- * 2. Falls back to direct table insert on `survey_responses` if the RPC is not yet installed.
+ * Validates all required demographic fields, `primary_ai_tool`, and all 16 raw Likert
+ * responses (1..5), automatically calculates the 6 composite scores (`warmth_total`,
+ * `warmth_mean`, `trust_total`, `trust_mean`, `disclosure_total`, `disclosure_mean`),
+ * and submits the complete 16-item record (`questionnaire_version = 'v1_16_items'`)
+ * to `public.survey_responses`.
  */
 export async function submitSurveyResponse(supabaseClient, payload) {
-  if (!supabaseClient) {
-    throw new Error('The survey database is not configured.');
-  }
-
-  // Stage 1: Preferred atomic server-side RPC
-  if (typeof supabaseClient.rpc === 'function') {
-    const { data, error } = await supabaseClient.rpc('submit_survey_response', {
-      p_payload: payload,
-    });
-
-    if (!error && data && data.status === 'submitted' && data.withdrawal_code) {
-      return {
-        withdrawal_code: data.withdrawal_code,
-        submitted_at: data.submitted_at,
-        withdrawal_deadline: data.withdrawal_deadline,
-      };
-    }
-
-    if (typeof supabaseClient.from !== 'function') {
-      throw new Error(error?.message || 'Submission failed.');
-    }
-  }
-
-  // Stage 2: Direct table insert with withdrawal columns
-  const code = generateCryptographicCode();
-  const hash = await sha256Hex(code);
-  const nowMs = Date.now();
-  const submittedAtIso = new Date(nowMs).toISOString();
-  const deadlineIso = new Date(nowMs + THREE_DAYS_MS).toISOString();
-
-  const extendedPayload = {
-    ...payload,
-    submitted_at: submittedAtIso,
-    withdrawal_code_hash: hash,
-    withdrawal_deadline: deadlineIso,
-  };
-
-  const { error: extError } = await supabaseClient
-    .from('survey_responses')
-    .insert(extendedPayload);
-
-  if (!extError) {
-    recordFallbackHashEntry(hash, submittedAtIso, deadlineIso);
-    return {
-      withdrawal_code: code,
-      submitted_at: submittedAtIso,
-      withdrawal_deadline: deadlineIso,
-    };
-  }
-
-  // Stage 3: Fallback to original schema columns
-  const { error: baseError } = await supabaseClient
-    .from('survey_responses')
-    .insert(payload);
-
-  if (!baseError) {
-    recordFallbackHashEntry(hash, submittedAtIso, deadlineIso);
-    return {
-      withdrawal_code: code,
-      submitted_at: submittedAtIso,
-      withdrawal_deadline: deadlineIso,
-    };
-  }
-
-  // Stage 4: Local fallback ledger if RLS policy has not yet been applied in SQL Editor
-  recordFallbackHashEntry(hash, submittedAtIso, deadlineIso);
-  return {
-    withdrawal_code: code,
-    submitted_at: submittedAtIso,
-    withdrawal_deadline: deadlineIso,
-    fallback_stored: true,
-  };
+  return submitSurveyWithWithdrawalCode(supabaseClient, payload);
 }
 
-export const submitSurveyWithWithdrawalCode = submitSurveyResponse;
+

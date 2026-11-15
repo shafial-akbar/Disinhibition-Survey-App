@@ -3,6 +3,7 @@ import { configured, supabase } from './lib/supabase';
 import { sections } from './data/questions';
 import {
   submitSurveyResponse,
+  prepareSurveySubmissionPayload,
   saveSessionSubmissionReceipt,
   loadSessionSubmissionReceipt,
   clearSessionSubmissionReceipt,
@@ -31,6 +32,9 @@ const blank = {
   education: '',
   occupation: '',
   ai_tools: [],
+  primary_ai_tool: '',
+  primary_ai_tool_choice: '',
+  primary_ai_tool_other: '',
   ai_frequency: '',
   ai_duration: '',
   ai_purpose: [],
@@ -126,16 +130,26 @@ export default function App() {
       E('Please complete the required demographic questions.');
       return;
     }
-    if (
-      step === 3 &&
-      (!p.ai_tools.length ||
+    if (step === 3) {
+      if (!p.primary_ai_tool_choice && !p.primary_ai_tool) {
+        E('Please select the conversational AI tool you use most frequently.');
+        return;
+      }
+      if (p.primary_ai_tool_choice === 'Other' && !(p.primary_ai_tool_other || '').trim()) {
+        E('Please specify the name of the conversational AI tool you use most frequently.');
+        return;
+      }
+      if (
+        !p.ai_tools.length ||
+        !(p.primary_ai_tool || '').trim() ||
         !p.ai_frequency ||
         !p.ai_duration ||
         !p.ai_purpose.length ||
-        !p.ai_familiarity)
-    ) {
-      E('Please complete all required AI usage questions.');
-      return;
+        !p.ai_familiarity
+      ) {
+        E('Please complete all required AI usage questions.');
+        return;
+      }
     }
     if (scale && scale.items.some((_, i) => !a[`${scale.prefix}_${i + 1}`])) {
       E('Please answer every statement before continuing.');
@@ -152,13 +166,35 @@ export default function App() {
   };
 
   async function submit() {
+    if (busy) return;
     E('');
     if (receipt?.withdrawal_code) {
       S(8);
       return;
     }
-    if (all.some(k => !a[k])) {
-      E('Please complete all questionnaire statements.');
+    if (!p.age_group || !p.education) {
+      E('Please complete the required demographic questions.');
+      return;
+    }
+    if (
+      !p.ai_tools.length ||
+      !(p.primary_ai_tool || '').trim() ||
+      (p.primary_ai_tool_choice === 'Other' && !(p.primary_ai_tool_other || '').trim()) ||
+      !p.ai_frequency ||
+      !p.ai_duration ||
+      !p.ai_purpose.length ||
+      !p.ai_familiarity
+    ) {
+      E('Please complete all required AI usage questions, including your most frequently used AI tool.');
+      return;
+    }
+    if (
+      all.some(k => {
+        const val = Number(a[k]);
+        return !a[k] || !Number.isInteger(val) || val < 1 || val > 5;
+      })
+    ) {
+      E(`Please complete all ${all.length} questionnaire statements.`);
       return;
     }
     if (!configured) {
@@ -167,19 +203,24 @@ export default function App() {
     }
     B(true);
     try {
-      const payload = {
+      const rawPayload = {
         ...p,
+        primary_ai_tool: (p.primary_ai_tool || '').trim(),
         ...Object.fromEntries(all.map(k => [k, Number(a[k])])),
       };
+      const payload = prepareSurveySubmissionPayload(rawPayload);
       const serverReceipt = await submitSurveyResponse(supabase, payload);
       setReceipt(serverReceipt);
       saveSessionSubmissionReceipt(serverReceipt);
       B(false);
       S(8);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch {
+    } catch (submissionErr) {
       B(false);
-      E('Submission failed. Please check your connection and try again.');
+      E(
+        submissionErr?.message ||
+          'Submission failed. Please check your connection and try again.'
+      );
     }
   }
 
@@ -339,6 +380,7 @@ export default function App() {
               <WarmthStep
                 answers={a}
                 onSelectAnswer={setAnswer}
+                primaryAiTool={p.primary_ai_tool}
                 back={back}
                 next={next}
               />
@@ -348,6 +390,7 @@ export default function App() {
               <TrustStep
                 answers={a}
                 onSelectAnswer={setAnswer}
+                primaryAiTool={p.primary_ai_tool}
                 back={back}
                 next={next}
               />
@@ -357,6 +400,7 @@ export default function App() {
               <DisclosureStep
                 answers={a}
                 onSelectAnswer={setAnswer}
+                primaryAiTool={p.primary_ai_tool}
                 back={back}
                 next={next}
               />

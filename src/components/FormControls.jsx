@@ -1,6 +1,10 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { likert } from '../data/questions';
+import {
+  likert,
+  questionnaireInstruction,
+  questionnaireInstructionBn,
+} from '../data/questions';
 
 export function Field({ label, required, children }) {
   return (
@@ -13,31 +17,37 @@ export function Field({ label, required, children }) {
   );
 }
 
-export function Select({ value, set, opts, optional }) {
+export function Select({ value, set, opts, optional, placeholder, optionLabels }) {
+  const defaultPlaceholder = optional
+    ? 'Select an option (optional)'
+    : 'Select an option';
+
   return (
     <select value={value} onChange={e => set(e.target.value)}>
-      <option value="">{optional ? 'Select an option (optional)' : 'Select an option'}</option>
+      <option value="">{placeholder || defaultPlaceholder}</option>
       {opts.map(x => (
-        <option key={x}>{x}</option>
+        <option key={x} value={x}>
+          {optionLabels?.[x] || x}
+        </option>
       ))}
     </select>
   );
 }
 
-export function Choices({ value, set, options }) {
+export function Choices({ value, set, options, labels }) {
   return (
     <div className="choices">
       {options.map(v => (
         <label className={value === v ? 'active' : ''} key={v}>
           <input type="radio" checked={value === v} onChange={() => set(v)} />
-          {v === 'yes' ? 'Yes' : 'No'}
+          {labels?.[v] || (v === 'yes' ? 'Yes' : 'No')}
         </label>
       ))}
     </div>
   );
 }
 
-export function Multi({ vals, toggle, opts }) {
+export function Multi({ vals, toggle, opts, optionLabels }) {
   return (
     <div className="multi">
       {opts.map(v => (
@@ -47,18 +57,18 @@ export function Multi({ vals, toggle, opts }) {
             checked={vals.includes(v)}
             onChange={() => toggle(v)}
           />
-          {v}
+          {optionLabels?.[v] || v}
         </label>
       ))}
     </div>
   );
 }
 
-export function Nav({ back, next, label = 'Continue' }) {
+export function Nav({ back, next, label = 'Continue', backLabel = 'Back' }) {
   return (
     <div className="nav">
       <button type="button" className="secondary" onClick={back}>
-        <ArrowLeft size={16} /> Back
+        <ArrowLeft size={16} /> {backLabel}
       </button>
       <button type="button" className="primary" onClick={next}>
         {label} <ArrowRight size={17} />
@@ -81,6 +91,7 @@ export function ScaleQuestionnaire({
   scale,
   answers,
   onSelectAnswer,
+  primaryAiTool,
   back,
   next,
   nextLabel = 'Continue',
@@ -94,6 +105,15 @@ export function ScaleQuestionnaire({
         {scale.title}{' '}
         {scale.titleBn && <span className="bn-title">({scale.titleBn})</span>}
       </h2>
+      <div className="instruction-box">
+        {primaryAiTool && (
+          <div className="primary-tool-pill">
+            Referring to your most frequently used AI tool: <strong>{primaryAiTool}</strong>
+          </div>
+        )}
+        <p>{questionnaireInstruction}</p>
+        <p className="bn">{questionnaireInstructionBn}</p>
+      </div>
       <p className="muted">
         {scale.description}{' '}
         {scale.descriptionBn && <span className="bn">({scale.descriptionBn})</span>}{' '}
