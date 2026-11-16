@@ -29,24 +29,39 @@ export function runHypothesisAndExploratoryAnalysis(
     const ci = statObj?.ci || { lower: null, upper: null };
     const n = statObj?.n ?? 0;
 
+    const pearsonR = pair?.pearson?.r ?? null;
+    const pearsonP = pair?.pearson?.pValue ?? null;
+    const spearmanRho = pair?.spearman?.rho ?? null;
+    const spearmanP = pair?.spearman?.pValue ?? null;
+    const hasMethodDivergence =
+      pearsonP !== null &&
+      spearmanP !== null &&
+      ((pearsonP < alphaLevel && spearmanP >= alphaLevel) ||
+        (pearsonP >= alphaLevel && spearmanP < alphaLevel));
+
     let decision = 'Insufficient Data';
     let supported = null;
     let explanation =
       'There are not enough valid responses yet (minimum n = 3 with non-zero variance) to test this hypothesis.';
 
     if (coef !== null && coef !== undefined && pValue !== null) {
+      const pFormatted = formatPValue(pValue) === '< .001' ? '< .001' : `= ${formatPValue(pValue)}`;
       if (pValue < alphaLevel && coef > 0) {
         decision = 'Supported';
         supported = true;
-        explanation = `A statistically significant positive ${method === 'spearman' ? 'Spearman rank' : 'Pearson'} correlation was observed (${method === 'spearman' ? 'ρ' : 'r'} = ${formatNumber(coef, 3)}, p ${formatPValue(pValue) === '< .001' ? '< .001' : `= ${formatPValue(pValue)}`}, 95% CI ${formatCI(ci, 2)}, n = ${n}). Because this is cross-sectional survey data, correlation indicates association rather than causation.`;
+        explanation = `A statistically significant positive ${method === 'spearman' ? 'Spearman rank' : 'Pearson'} correlation was observed (${method === 'spearman' ? 'ρ' : 'r'} = ${formatNumber(coef, 3)}, p ${pFormatted}, 95% CI ${formatCI(ci, 2)}, n = ${n}).${
+          hasMethodDivergence && method === 'pearson'
+            ? ` Note: While the predefined primary parametric test (Pearson's r) is statistically significant, the non-parametric Spearman rank-order correlation did not reach significance (ρ = ${formatNumber(spearmanRho, 3)}, p ${formatPValue(spearmanP) === '< .001' ? '< .001' : `= ${formatPValue(spearmanP)}`}), warranting cautious interpretation.`
+            : ''
+        } Because this is cross-sectional survey data, correlation indicates association rather than causation.`;
       } else if (pValue < alphaLevel && coef < 0) {
         decision = 'Not supported by the statistical evidence';
         supported = false;
-        explanation = `Although statistically significant (p ${formatPValue(pValue) === '< .001' ? '< .001' : `= ${formatPValue(pValue)}`}), the observed relationship was negative (${formatNumber(coef, 3)}), opposite to the hypothesized positive association.`;
+        explanation = `Although statistically significant (p ${pFormatted}), the observed relationship was negative (${formatNumber(coef, 3)}), opposite to the hypothesized positive association.`;
       } else {
         decision = 'Not supported by the statistical evidence';
         supported = false;
-        explanation = `The observed correlation (${method === 'spearman' ? 'ρ' : 'r'} = ${formatNumber(coef, 3)}, p = ${formatPValue(pValue)}, n = ${n}) did not reach statistical significance at α = ${alphaLevel}.`;
+        explanation = `The observed correlation (${method === 'spearman' ? 'ρ' : 'r'} = ${formatNumber(coef, 3)}, p ${pFormatted}, n = ${n}) did not reach statistical significance at α = ${alphaLevel}.`;
       }
     }
 
@@ -60,6 +75,11 @@ export function runHypothesisAndExploratoryAnalysis(
       decision,
       supported,
       explanation,
+      hasMethodDivergence,
+      pearsonR,
+      pearsonP,
+      spearmanRho,
+      spearmanP,
       warning: statObj?.warning || null,
     };
   });

@@ -55,11 +55,11 @@ export default function HypothesisTesting({ analysis, onRefresh }) {
                       Female (n={exploratory.genderComparison.tTest.nB}): M = {formatNumber(exploratory.genderComparison.tTest.meanB, 2)}, SD = {formatNumber(exploratory.genderComparison.tTest.sdB, 2)}
                     </div>
                     <div>
-                      Welch&apos;s t({formatNumber(exploratory.genderComparison.tTest.df, 1)}) = {formatNumber(exploratory.genderComparison.tTest.tStat, 3)}, p = {formatPValue(exploratory.genderComparison.tTest.pValue)}, d = {formatNumber(exploratory.genderComparison.tTest.cohensD, 2)}
+                      Welch&apos;s t({formatNumber(exploratory.genderComparison.tTest.df, 1)}) = {formatNumber(exploratory.genderComparison.tTest.tStat, 3)}, p {formatPValue(exploratory.genderComparison.tTest.pValue) === '< .001' ? '< .001' : `= ${formatPValue(exploratory.genderComparison.tTest.pValue)}`}, d = {formatNumber(exploratory.genderComparison.tTest.cohensD, 2)}
                     </div>
                     {exploratory.genderComparison.mannWhitney.applicable && (
                       <div>
-                        Mann-Whitney U = {formatNumber(exploratory.genderComparison.mannWhitney.uStat, 1)}, p = {formatPValue(exploratory.genderComparison.mannWhitney.pValue)}
+                        Mann-Whitney U = {formatNumber(exploratory.genderComparison.mannWhitney.uStat, 1)}, p {formatPValue(exploratory.genderComparison.mannWhitney.pValue) === '< .001' ? '< .001' : `= ${formatPValue(exploratory.genderComparison.mannWhitney.pValue)}`}
                       </div>
                     )}
                   </div>
@@ -75,11 +75,11 @@ export default function HypothesisTesting({ analysis, onRefresh }) {
                 {exploratory.ageGroupComparison.anova.applicable ? (
                   <div style={{ fontSize: 13, lineHeight: 1.7, color: '#1e293b', fontVariantNumeric: 'tabular-nums' }}>
                     <div>
-                      One-Way ANOVA: F({exploratory.ageGroupComparison.anova.df1}, {exploratory.ageGroupComparison.anova.df2}) = {formatNumber(exploratory.ageGroupComparison.anova.fStat, 3)}, p = {formatPValue(exploratory.ageGroupComparison.anova.pValue)}, η² = {formatNumber(exploratory.ageGroupComparison.anova.etaSquared, 3)}
+                      One-Way ANOVA: F({exploratory.ageGroupComparison.anova.df1}, {exploratory.ageGroupComparison.anova.df2}) = {formatNumber(exploratory.ageGroupComparison.anova.fStat, 3)}, p {formatPValue(exploratory.ageGroupComparison.anova.pValue) === '< .001' ? '< .001' : `= ${formatPValue(exploratory.ageGroupComparison.anova.pValue)}`}, η² = {formatNumber(exploratory.ageGroupComparison.anova.etaSquared, 3)}
                     </div>
                     {exploratory.ageGroupComparison.kruskalWallis.applicable && (
                       <div>
-                        Kruskal-Wallis H({exploratory.ageGroupComparison.kruskalWallis.df}) = {formatNumber(exploratory.ageGroupComparison.kruskalWallis.hStat, 3)}, p = {formatPValue(exploratory.ageGroupComparison.kruskalWallis.pValue)}
+                        Kruskal-Wallis H({exploratory.ageGroupComparison.kruskalWallis.df}) = {formatNumber(exploratory.ageGroupComparison.kruskalWallis.hStat, 3)}, p {formatPValue(exploratory.ageGroupComparison.kruskalWallis.pValue) === '< .001' ? '< .001' : `= ${formatPValue(exploratory.ageGroupComparison.kruskalWallis.pValue)}`}
                       </div>
                     )}
                   </div>
@@ -95,11 +95,11 @@ export default function HypothesisTesting({ analysis, onRefresh }) {
                 {exploratory.frequencyComparison.anova.applicable ? (
                   <div style={{ fontSize: 13, lineHeight: 1.7, color: '#1e293b', fontVariantNumeric: 'tabular-nums' }}>
                     <div>
-                      One-Way ANOVA: F({exploratory.frequencyComparison.anova.df1}, {exploratory.frequencyComparison.anova.df2}) = {formatNumber(exploratory.frequencyComparison.anova.fStat, 3)}, p = {formatPValue(exploratory.frequencyComparison.anova.pValue)}, η² = {formatNumber(exploratory.frequencyComparison.anova.etaSquared, 3)}
+                      One-Way ANOVA: F({exploratory.frequencyComparison.anova.df1}, {exploratory.frequencyComparison.anova.df2}) = {formatNumber(exploratory.frequencyComparison.anova.fStat, 3)}, p {formatPValue(exploratory.frequencyComparison.anova.pValue) === '< .001' ? '< .001' : `= ${formatPValue(exploratory.frequencyComparison.anova.pValue)}`}, η² = {formatNumber(exploratory.frequencyComparison.anova.etaSquared, 3)}
                     </div>
                     {exploratory.frequencyComparison.kruskalWallis.applicable && (
                       <div>
-                        Kruskal-Wallis H({exploratory.frequencyComparison.kruskalWallis.df}) = {formatNumber(exploratory.frequencyComparison.kruskalWallis.hStat, 3)}, p = {formatPValue(exploratory.frequencyComparison.kruskalWallis.pValue)}
+                        Kruskal-Wallis H({exploratory.frequencyComparison.kruskalWallis.df}) = {formatNumber(exploratory.frequencyComparison.kruskalWallis.hStat, 3)}, p {formatPValue(exploratory.frequencyComparison.kruskalWallis.pValue) === '< .001' ? '< .001' : `= ${formatPValue(exploratory.frequencyComparison.kruskalWallis.pValue)}`}
                       </div>
                     )}
                   </div>
@@ -116,7 +116,7 @@ export default function HypothesisTesting({ analysis, onRefresh }) {
                   <div key={i} style={{ fontSize: 12.5, lineHeight: 1.65, color: '#1e293b', fontVariantNumeric: 'tabular-nums' }}>
                     <strong>{reg.title}:</strong>{' '}
                     {reg.applicable
-                      ? `b = ${formatNumber(reg.slope, 3)} (SE = ${formatNumber(reg.seSlope, 3)}), R² = ${formatNumber(reg.rSquared, 3)}, t(${reg.df}) = ${formatNumber(reg.tStat, 2)}, p = ${formatPValue(reg.pValue)}`
+                      ? `b = ${formatNumber(reg.slope, 3)} (SE = ${formatNumber(reg.seSlope, 3)}), R² = ${formatNumber(reg.rSquared, 3)}, t(${reg.df}) = ${formatNumber(reg.tStat, 2)}, p ${formatPValue(reg.pValue) === '< .001' ? '< .001' : `= ${formatPValue(reg.pValue)}`}`
                       : `Not run (${reg.reason})`}
                   </div>
                 ))}

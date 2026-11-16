@@ -160,7 +160,7 @@ export default function CorrelationAnalysis({
               <AdminChart
                 key={pair.id}
                 title={`${pair.id}: ${pair.varX} vs. ${pair.varY}`}
-                subtitle={`r = ${formatNumber(pair.pearson?.r, 3)}, p = ${formatPValue(pair.pearson?.pValue)} (n=${pair.n})`}
+                subtitle={`r = ${formatNumber(pair.pearson?.r, 3)}, p ${formatPValue(pair.pearson?.pValue) === '< .001' ? '< .001' : `= ${formatPValue(pair.pearson?.pValue)}`} (n=${pair.n})`}
                 type="scatter"
                 data={pair.scatterPoints}
                 xKey="x"

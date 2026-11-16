@@ -5,6 +5,7 @@ import App from './App.jsx';
 import './styles.css';
 import './styles/admin.css';
 import './styles/analysis.css';
+import './styles/chapter4.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -38,6 +38,7 @@ export const ADMIN_MENU_CATEGORIES = [
   {
     category: 'THESIS REPORT',
     items: [
+      { id: 'chapter-4-apa7', label: 'Chapter 4 - APA 7', path: '/admin/thesis-report/chapter-4', icon: 'FileText' },
       { id: 'chapter-4', label: 'Chapter 4 — Complete Results', path: '/admin/dashboard/chapter-4', icon: 'BookOpen' },
     ],
   },

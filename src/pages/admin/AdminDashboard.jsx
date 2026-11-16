@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AdminLayout from '../../components/admin/AdminLayout';
 import AdminLoading from '../../components/admin/AdminLoading';
 import AdminError from '../../components/admin/AdminError';
@@ -20,11 +20,15 @@ import NormalityAnalysis from './analysis/NormalityAnalysis';
 import CorrelationAnalysis from './analysis/CorrelationAnalysis';
 import HypothesisTesting from './analysis/HypothesisTesting';
 import Chapter4Analysis from './analysis/Chapter4Analysis';
+import Chapter4Page from './thesis/Chapter4Page';
 import ExportCenter from './reports/ExportCenter';
 import AnalysisSettings from './settings/AnalysisSettings';
 import AdminSettings from './settings/AdminSettings';
 
 export default function AdminDashboard({ session, onLogout }) {
+  const location = useLocation();
+  const isThesisReportRoute = location.pathname.startsWith('/admin/thesis-report');
+
   const {
     rawRows,
     filteredRawRows,
@@ -77,6 +81,11 @@ export default function AdminDashboard({ session, onLogout }) {
         <AdminLoading />
       ) : error && rawRows.length === 0 ? (
         <AdminError error={error} needsAdminSql={needsAdminSql} onRetry={refresh} />
+      ) : isThesisReportRoute ? (
+        <Routes>
+          <Route path="chapter-4" element={<Chapter4Page {...sharedProps} />} />
+          <Route path="*" element={<Navigate to="/admin/thesis-report/chapter-4" replace />} />
+        </Routes>
       ) : (
         <Routes>
           <Route index element={<DataOverview {...sharedProps} />} />
@@ -93,6 +102,7 @@ export default function AdminDashboard({ session, onLogout }) {
           <Route path="correlation" element={<CorrelationAnalysis {...sharedProps} />} />
           <Route path="hypotheses" element={<HypothesisTesting {...sharedProps} />} />
           <Route path="chapter-4" element={<Chapter4Analysis {...sharedProps} />} />
+          <Route path="thesis-report/chapter-4" element={<Chapter4Page {...sharedProps} />} />
           <Route path="export" element={<ExportCenter {...sharedProps} />} />
           <Route path="analysis-settings" element={<AnalysisSettings {...sharedProps} />} />
           <Route path="admin-settings" element={<AdminSettings {...sharedProps} />} />

@@ -49,7 +49,7 @@ export default function NormalityAnalysis({ analysis, onRefresh }) {
               <AdminChart
                 key={`${s.code}-hist`}
                 title={`${s.code} Histogram`}
-                subtitle={`W = ${formatNumber(s.wStatistic, 3)}, p = ${formatPValue(s.pValue)}`}
+                subtitle={`W = ${formatNumber(s.wStatistic, 3)}, p ${formatPValue(s.pValue) === '< .001' ? '< .001' : `= ${formatPValue(s.pValue)}`}`}
                 type="bar"
                 data={s.histogram}
                 xKey="rangeLabel"

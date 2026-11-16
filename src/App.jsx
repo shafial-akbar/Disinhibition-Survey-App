@@ -479,6 +479,14 @@ export default function App() {
         element={<AdminLogin isAuthenticated={isAuthenticated} onSignIn={signIn} />}
       />
       <Route
+        path="/admin/thesis-report/*"
+        element={
+          <AdminProtectedRoute isAuthenticated={isAuthenticated}>
+            <AdminDashboard session={session} onLogout={signOut} />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route
         path="/admin/dashboard/*"
         element={
           <AdminProtectedRoute isAuthenticated={isAuthenticated}>
