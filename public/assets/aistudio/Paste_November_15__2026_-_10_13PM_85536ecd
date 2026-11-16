@@ -1,0 +1,1489 @@
+
+PROJECT: Add a Complete Research Data Analysis and Statistical Reporting System to My Existing Questionnaire Application
+
+ROLE:
+Act as a senior full-stack developer, database architect, UI/UX designer, and statistical software developer.
+
+Your task is to upgrade my EXISTING questionnaire application by adding a complete Admin Dashboard and Statistical Analysis System.
+
+IMPORTANT:
+This is an existing working application. Do NOT create a new application from scratch.
+
+First inspect the entire existing project, understand its structure, database schema, questionnaire configuration, data submission workflow, and existing security rules.
+
+Then implement the new system without damaging the existing application.
+
+==================================================
+1. MY MAIN GOAL
+==================================================
+
+I have developed a questionnaire-based research application using Google AI Studio.
+
+The application uses:
+- React
+- Vite
+- Supabase
+- PostgreSQL
+- Existing survey_responses database table
+
+The application collects real research responses from adults in Bangladesh.
+
+My research title:
+
+"Perceived Conversational Warmth, Trust, and Willingness to Self-Disclose to Conversational AI: A Questionnaire-Based Study among Adults in Bangladesh."
+
+I want to add a complete research analysis system to the existing application.
+
+The new system should allow me to:
+
+1. View all collected responses.
+2. Inspect raw data.
+3. Clean and validate data.
+4. Calculate questionnaire scale scores.
+5. Perform descriptive statistics.
+6. Perform reliability analysis.
+7. Perform normality tests.
+8. Perform correlation analysis.
+9. Test research hypotheses.
+10. Generate Chapter 4 results.
+11. Display interactive tables, charts, graphs, and visualizations.
+12. Export results and analysis files.
+
+The system should be understandable even to someone with very basic computer knowledge.
+
+==================================================
+2. MOST IMPORTANT DEVELOPMENT RULES
+==================================================
+
+A. VERY SIMPLE CODE
+
+Write code as simply as possible.
+
+Imagine that a Grade 3 student should be able to understand the basic purpose of each file and function.
+
+Requirements:
+
+- Use simple variable names.
+- Use simple function names.
+- Use short functions.
+- Avoid complicated programming patterns.
+- Avoid unnecessary abstractions.
+- Avoid deeply nested conditions.
+- Avoid unnecessarily complicated one-line code.
+- Write helpful comments in simple English.
+- Explain what each important function does.
+- Use readable formatting.
+- Use reusable components.
+- Keep files small and focused.
+
+Do not sacrifice statistical correctness or security to make code short.
+
+B. MODULAR ARCHITECTURE
+
+Do not put the entire application in App.jsx.
+
+Create separate components, pages, services, utilities, hooks, and analysis modules.
+
+Organize files into meaningful folders.
+
+Every file should have one clear responsibility.
+
+Example architecture (adapt it to the existing project rather than blindly replacing the current structure):
+
+src/
+  components/
+    admin/
+      AdminHeader.jsx
+      AdminSidebar.jsx
+      AdminLayout.jsx
+      AdminCard.jsx
+      AdminStatCard.jsx
+      AdminTable.jsx
+      AdminChart.jsx
+      AdminEmptyState.jsx
+      AdminLoading.jsx
+      AdminError.jsx
+
+    analysis/
+      FrequencyTable.jsx
+      DescriptiveTable.jsx
+      ReliabilityTable.jsx
+      CorrelationTable.jsx
+      HypothesisResult.jsx
+      InterpretationBox.jsx
+      ChartCard.jsx
+      ExportButtons.jsx
+
+    common/
+      PageTitle.jsx
+      Breadcrumb.jsx
+      SearchBox.jsx
+      FilterBar.jsx
+      Pagination.jsx
+      ConfirmDialog.jsx
+
+  pages/
+    admin/
+      AdminLogin.jsx
+      AdminDashboard.jsx
+
+      reports/
+        DataOverview.jsx
+        RawDataReport.jsx
+        DataCleaningReport.jsx
+        DemographicReport.jsx
+        AIUsageReport.jsx
+
+      analysis/
+        ScoringAnalysis.jsx
+        DescriptiveAnalysis.jsx
+        ReliabilityAnalysis.jsx
+        NormalityAnalysis.jsx
+        CorrelationAnalysis.jsx
+        HypothesisTesting.jsx
+        Chapter4Analysis.jsx
+
+      settings/
+        AnalysisSettings.jsx
+        AdminSettings.jsx
+
+  services/
+    supabase/
+      supabaseClient.js
+      adminAuthService.js
+      responseService.js
+
+    analysis/
+      dataCleaningService.js
+      scoringService.js
+      descriptiveService.js
+      reliabilityService.js
+      normalityService.js
+      correlationService.js
+      hypothesisService.js
+      chapter4Service.js
+
+    export/
+      csvExportService.js
+      excelExportService.js
+      pdfExportService.js
+
+  utils/
+    statistics/
+      mean.js
+      median.js
+      mode.js
+      variance.js
+      standardDeviation.js
+      pearsonCorrelation.js
+      spearmanCorrelation.js
+      cronbachAlpha.js
+      shapiroWilk.js
+      confidenceInterval.js
+
+    formatters/
+      numberFormatter.js
+      dateFormatter.js
+      percentageFormatter.js
+
+  config/
+    questionnaireConfig.js
+    analysisConfig.js
+    adminMenuConfig.js
+
+  hooks/
+    useResponses.js
+    useAnalysis.js
+    useAdminAuth.js
+
+  styles/
+    admin.css
+    analysis.css
+
+  tests/
+    statistics/
+    scoring/
+    dataCleaning/
+
+This is an example structure.
+
+Preserve the existing project structure where practical. Do not unnecessarily move or rename existing files.
+
+C. BEFORE CODING
+
+First inspect:
+
+1. All existing source files.
+2. Existing React components.
+3. Existing Supabase connection.
+4. Existing database schema.
+5. Existing survey_responses table.
+6. All questionnaire questions.
+7. Existing response submission logic.
+8. Existing Row Level Security policies.
+9. Existing withdrawal and response-locking workflow, if present.
+10. Existing environment variables.
+
+Then create a short implementation plan.
+
+Identify which files need to be created and which existing files need modification.
+
+Do not start by replacing the entire project.
+
+==================================================
+3. PROTECT EXISTING DATA AND QUESTIONNAIRE
+==================================================
+
+This is extremely important.
+
+The existing questionnaire and its data collection workflow must continue working exactly as before.
+
+DO NOT:
+
+- Delete existing responses.
+- Reset the database.
+- Drop existing tables.
+- Rename existing database columns without a necessary migration.
+- Change existing questionnaire questions.
+- Change existing question wording.
+- Change the participant submission process.
+- Change consent or eligibility rules.
+- Change existing response identifiers.
+- Remove existing withdrawal functionality.
+- Remove existing data-locking functionality.
+- Replace real participant responses with sample data.
+- Insert fake responses.
+- Modify original raw answers during analysis.
+
+The existing survey_responses table is the original research data source.
+
+All analysis must use actual participant responses.
+
+Keep original item-level responses available for reliability and other statistical analyses.
+
+Do not calculate Cronbach's Alpha using only composite scores.
+
+IMPORTANT DATABASE RULE:
+
+Calculate analytical scores and statistical results from the raw responses when the admin runs an analysis.
+
+Do not create a separate analysis-results database table by default.
+
+Do not unnecessarily add columns to survey_responses.
+
+If a schema change is genuinely necessary, explain why and provide a safe, idempotent SQL migration.
+
+Never run destructive SQL automatically.
+
+==================================================
+4. QUESTIONNAIRE CONFIGURATION
+==================================================
+
+My research contains three main constructs:
+
+1. Perceived Conversational Warmth (PCW)
+2. Perceived Trust (PT)
+3. Willingness to Self-Disclose (WSD)
+
+Each construct is measured using five-point Likert-scale items.
+
+However, the questionnaire was updated during development.
+
+Therefore:
+
+IMPORTANT:
+Do not assume the number of questions.
+
+Inspect the current questionnaire source code and the actual Supabase schema.
+
+Read the current question IDs, item prefixes, item counts, response columns, and reverse-scoring configuration.
+
+Use the actual current questionnaire configuration.
+
+Do not mix old questionnaire versions with the final questionnaire.
+
+Create one central configuration file:
+
+config/questionnaireConfig.js
+
+It should define:
+
+- Construct names.
+- Item IDs.
+- Database column names.
+- Number of items.
+- Minimum Likert value.
+- Maximum Likert value.
+- Reverse-scored items, if any.
+- Composite score calculation rules.
+- Questionnaire version.
+
+Example structure:
+
+PCW:
+  name: Perceived Conversational Warmth
+  items: [actual item IDs]
+
+PT:
+  name: Perceived Trust
+  items: [actual item IDs]
+
+WSD:
+  name: Willingness to Self-Disclose
+  items: [actual item IDs]
+
+Do not use this example as the actual item count.
+
+Read the existing project and populate the configuration correctly.
+
+All analysis modules must use this central configuration.
+
+If the questionnaire changes in the future, I should only need to update the configuration rather than editing many files.
+
+==================================================
+5. ADMIN LOGIN
+==================================================
+
+Create an admin login page at:
+
+/admin
+
+Expected initial development login:
+
+Username: admin
+Password: admin
+
+IMPORTANT SECURITY REQUIREMENTS:
+
+- Do not permanently hardcode admin credentials in frontend JavaScript.
+- Do not store passwords in plain text.
+- Use secure password hashing and server-side authentication.
+- Use environment variables or a secure admin account setup process.
+- The initial admin/admin account may be used only as a development bootstrap account.
+- Require the admin to change the initial password immediately.
+- Never allow the default password in production.
+- Use secure session handling.
+- Protect every admin route.
+- If an unauthenticated visitor opens an admin page, redirect them to /admin.
+- If login fails, show a simple error message.
+- Provide a logout button.
+- Do not expose admin credentials in browser source code.
+
+Use Supabase Auth or an appropriate secure server-side authentication mechanism.
+
+If Supabase Auth is used, configure admin access through a secure admin role or allowlist.
+
+Never trust a role value supplied by the browser.
+
+==================================================
+6. ADMIN DASHBOARD DESIGN
+==================================================
+
+After successful login, open:
+
+/admin/dashboard
+
+Create a professional, clean, modern, responsive dashboard.
+
+The dashboard should be easy to navigate.
+
+Use:
+
+- Sidebar navigation.
+- Top navigation bar.
+- Breadcrumbs.
+- Dashboard cards.
+- Tables.
+- Charts.
+- Filters.
+- Search.
+- Pagination.
+- Export buttons.
+
+The sidebar should have clear categories.
+
+Suggested menu:
+
+DASHBOARD
+
+1. Overview
+
+DATA MANAGEMENT
+
+2. All Responses
+3. Raw Data
+4. Data Cleaning
+5. Data Quality Report
+
+PARTICIPANT REPORTS
+
+6. Demographic Analysis
+7. AI Usage Analysis
+
+STATISTICAL ANALYSIS
+
+8. Scoring Analysis
+9. Descriptive Statistics
+10. Reliability Analysis
+11. Normality Analysis
+12. Correlation Analysis
+13. Hypothesis Testing
+
+THESIS REPORT
+
+14. Chapter 4 — Complete Results
+
+EXPORT
+
+15. Export Center
+
+SETTINGS
+
+16. Analysis Settings
+17. Admin Settings
+
+Every menu item must open a real working page.
+
+Do not create decorative menu links that do nothing.
+
+Use a responsive sidebar that works on desktop, tablet, and mobile.
+
+==================================================
+7. DASHBOARD OVERVIEW
+==================================================
+
+Show important research statistics in dashboard cards.
+
+Examples:
+
+- Total responses.
+- Valid responses.
+- Excluded responses.
+- Pending withdrawal requests, if applicable.
+- Locked responses.
+- Average age, if age is collected and can be calculated correctly.
+- PCW average.
+- Trust average.
+- WSD average.
+
+Show charts for:
+
+- Responses by gender.
+- Responses by age group.
+- Education level.
+- Occupation.
+- AI usage frequency.
+- AI usage duration.
+- Most-used conversational AI tools.
+- Main purposes of AI use.
+
+Use real database data only.
+
+Never use invented numbers to fill dashboard cards or charts.
+
+If no data exists, show:
+
+"No data available yet."
+
+Show the date and time of the latest successful analysis.
+
+==================================================
+8. RAW DATA MANAGEMENT
+==================================================
+
+Create a Raw Data page.
+
+Display the actual records from survey_responses.
+
+Requirements:
+
+- Show all relevant columns.
+- Keep raw item responses visible.
+- Search records.
+- Filter by demographic fields.
+- Filter by date.
+- Sort columns.
+- Paginate large datasets.
+- View one participant's complete response.
+- Show response ID.
+- Show submission date.
+- Show response status where applicable.
+
+Do not expose sensitive internal fields such as withdrawal-code hashes or secret tokens.
+
+Do not show private authentication information.
+
+Allow authorized admin users to export raw data.
+
+Raw data must remain unchanged.
+
+==================================================
+9. DATA CLEANING MODULE
+==================================================
+
+Create a separate Data Cleaning page.
+
+This page should inspect the dataset and identify possible data-quality problems.
+
+Check:
+
+1. Missing values.
+2. Invalid Likert values.
+3. Duplicate response IDs.
+4. Duplicate records, if a defensible duplicate rule exists.
+5. Incomplete questionnaires.
+6. Invalid demographic values.
+7. Invalid dates.
+8. Incorrect questionnaire versions.
+9. Responses that do not meet eligibility requirements.
+10. Records excluded or locked according to the existing research rules.
+
+For every detected issue, show:
+
+- Issue name.
+- Number of affected records.
+- Response IDs.
+- Explanation.
+- Recommended action.
+
+IMPORTANT:
+
+Do not automatically delete any record.
+
+Do not automatically change a participant's original answer.
+
+Provide a transparent exclusion review.
+
+The admin should be able to mark a record as included or excluded for analysis, with a reason.
+
+This decision must not change the original raw response.
+
+Maintain a clear distinction between:
+
+- Total submitted responses.
+- Valid responses.
+- Excluded responses.
+- Responses included in a particular analysis.
+
+Respect any existing withdrawal deadline and locked-for-analysis rules.
+
+Do not include withdrawn records in analysis if the approved research protocol requires their exclusion.
+
+==================================================
+10. SCORING ENGINE
+==================================================
+
+Create a Scoring Analysis page.
+
+Calculate each construct score from its individual raw questionnaire items.
+
+Use the actual questionnaire configuration.
+
+For every construct calculate:
+
+- Item-level responses.
+- Total score.
+- Mean score.
+- Minimum possible score.
+- Maximum possible score.
+- Actual minimum.
+- Actual maximum.
+
+If reverse-scored items exist, apply the correct reverse-scoring rule.
+
+For a five-point scale:
+
+Reverse score = 6 - original score.
+
+Only apply this to items explicitly configured as reverse-scored.
+
+Do not assume every item is positively worded.
+
+Missing-data handling must be transparent.
+
+Do not silently replace missing answers with zero or the scale midpoint.
+
+Use a clearly documented rule for whether a composite score is calculated when some items are missing.
+
+For each participant, display the calculated scores in a separate analysis view.
+
+Do not overwrite the original raw item answers.
+
+Show the scoring formula in simple language.
+
+Example:
+
+PCW Mean = Sum of valid PCW item scores / Number of valid PCW items.
+
+Use the actual number of items from the current questionnaire configuration.
+
+==================================================
+11. DESCRIPTIVE STATISTICS
+==================================================
+
+Create a Descriptive Statistics page.
+
+Calculate statistics for:
+
+- Each individual questionnaire item.
+- PCW composite score.
+- Trust composite score.
+- WSD composite score.
+
+Where appropriate, also calculate demographic and AI usage summaries.
+
+For numerical variables calculate:
+
+- Valid N.
+- Missing N.
+- Mean.
+- Median.
+- Mode.
+- Standard deviation.
+- Variance.
+- Minimum.
+- Maximum.
+- Range.
+- Standard error.
+- Skewness.
+- Kurtosis.
+
+Use correct statistical definitions.
+
+Clearly state whether standard deviation and variance use sample or population formulas.
+
+For research sample data, use sample standard deviation and sample variance by default.
+
+For categorical variables calculate:
+
+- Frequency.
+- Percentage.
+- Valid percentage, when missing data exist.
+
+For multiple-select questions:
+
+Count how many participants selected each option.
+
+Explain that percentages may add up to more than 100% because participants can select multiple options.
+
+Show results in:
+
+- Statistical tables.
+- Bar charts.
+- Pie charts where appropriate.
+- Histograms.
+- Summary cards.
+
+==================================================
+12. RELIABILITY ANALYSIS
+==================================================
+
+Create a Reliability Analysis page.
+
+Calculate Cronbach's Alpha separately for:
+
+1. PCW.
+2. Trust.
+3. WSD.
+
+Use individual item responses.
+
+Do not use composite scores as input for Cronbach's Alpha.
+
+Calculate:
+
+- Number of items.
+- Number of valid participants.
+- Cronbach's Alpha.
+- Corrected item-total correlation.
+- Item-rest correlation, if supported.
+- Alpha if item deleted.
+
+Use the correct Cronbach's Alpha formula.
+
+Formula:
+
+Alpha = [k / (k - 1)] × [1 - (sum of item variances / variance of total score)]
+
+Where:
+
+k = number of items.
+
+Show:
+
+- Reliability summary table.
+- Item-level reliability table.
+- Reliability interpretation.
+- Simple explanation of Cronbach's Alpha.
+- A note that reliability is sample-dependent.
+
+Do not automatically remove items just to increase Alpha.
+
+Do not claim that a scale is valid merely because its Alpha is high.
+
+==================================================
+13. NORMALITY ANALYSIS
+==================================================
+
+Create a Normality Analysis page.
+
+Check the distribution of:
+
+- PCW composite score.
+- Trust composite score.
+- WSD composite score.
+
+Include:
+
+- Shapiro-Wilk test.
+- Test statistic.
+- p-value.
+- Histogram.
+- Q-Q plot.
+- Skewness.
+- Kurtosis.
+
+Explain the result in simple language.
+
+For Shapiro-Wilk:
+
+If p < .05:
+Evidence against normality.
+
+If p >= .05:
+There is insufficient evidence to reject normality.
+
+Do not say that p >= .05 proves the data are normally distributed.
+
+Mention that normality tests can be sensitive to sample size.
+
+Also explain that Pearson correlation assumptions concern the relationship and relevant distributions, not merely one isolated normality-test result.
+
+==================================================
+14. CORRELATION ANALYSIS
+==================================================
+
+Create a Correlation Analysis page.
+
+The primary research relationships are:
+
+H1:
+Perceived Conversational Warmth is positively associated with Perceived Trust.
+
+H2:
+Perceived Trust is positively associated with Willingness to Self-Disclose.
+
+H3:
+Perceived Conversational Warmth is positively associated with Willingness to Self-Disclose.
+
+Calculate:
+
+A. Pearson correlation.
+
+For each pair show:
+
+- Pearson r.
+- p-value.
+- Sample size.
+- 95% confidence interval.
+- Direction of relationship.
+- Strength of relationship.
+
+B. Spearman rank correlation.
+
+Calculate Spearman's rho for the same pairs.
+
+Explain why Pearson and Spearman may produce different results.
+
+Show:
+
+- Pearson correlation matrix.
+- Spearman correlation matrix.
+- Scatterplots.
+- Correlation heatmap.
+- Simple interpretation.
+
+Use a two-tailed significance test unless the approved research plan explicitly specifies otherwise.
+
+Use the actual valid N for each pair.
+
+Handle missing data transparently.
+
+State whether pairwise or listwise deletion is used.
+
+Do not report p = 0.000.
+
+When the p-value is smaller than .001, display p < .001.
+
+Do not confuse statistical significance with practical importance.
+
+==================================================
+15. HYPOTHESIS TESTING
+==================================================
+
+Create a Hypothesis Testing page.
+
+Display H1, H2, and H3 separately.
+
+For each hypothesis show:
+
+- Research hypothesis.
+- Statistical test.
+- Correlation coefficient.
+- p-value.
+- Confidence interval.
+- Sample size.
+- Decision.
+- Simple interpretation.
+
+Use clear language:
+
+"Supported" or "Not supported by the statistical evidence."
+
+Do not say "accepted as proven."
+
+Do not make causal claims from cross-sectional correlational data.
+
+Explain that correlation does not establish causation.
+
+Allow the admin to select whether the primary decision uses Pearson or another method, but clearly show the method used.
+
+==================================================
+16. ADDITIONAL EXPLORATORY ANALYSIS
+==================================================
+
+Where statistically appropriate and supported by the actual data, provide optional exploratory analysis.
+
+Examples:
+
+- Relationships between demographic variables and composite scores.
+- Group comparisons.
+- Independent-samples t-test.
+- One-way ANOVA.
+- Mann-Whitney U test.
+- Kruskal-Wallis test.
+- Linear regression.
+- Effect sizes.
+- Confidence intervals.
+
+IMPORTANT:
+
+Do not run every test blindly.
+
+Only show a test when its assumptions and data requirements are reasonably satisfied.
+
+Clearly label exploratory analyses as exploratory.
+
+Do not present exploratory findings as confirmatory hypotheses.
+
+Do not make unsupported claims.
+
+==================================================
+17. CHAPTER 4 — COMPLETE RESULTS
+==================================================
+
+This is one of the MOST IMPORTANT sections.
+
+Create a separate sidebar menu link:
+
+"Chapter 4 — Complete Results"
+
+This page should automatically generate all relevant Chapter 4 calculations and findings from the actual database records.
+
+The page should be organized in an academic research-report structure.
+
+Suggested sections:
+
+4.1 Introduction to the Results
+
+4.2 Data Screening and Preparation
+
+4.3 Response and Sample Overview
+
+4.4 Demographic Characteristics
+
+4.5 Conversational AI Usage Characteristics
+
+4.6 Descriptive Statistics of Research Variables
+
+4.7 Questionnaire Scoring
+
+4.8 Reliability Analysis
+
+4.9 Normality Assessment
+
+4.10 Correlation Analysis
+
+4.11 Hypothesis Testing
+
+4.12 Additional Exploratory Findings
+
+4.13 Summary of Major Findings
+
+Adapt these headings to the actual analyses and approved research methodology.
+
+For every section:
+
+1. Show the statistical table.
+2. Show the relevant chart or graph.
+3. Show the calculation results.
+4. Explain the result in simple English.
+5. Explain what the result means.
+6. Explain why the result matters.
+7. Provide an academic interpretation suitable for a Psychology thesis.
+8. Clearly identify limitations where necessary.
+
+For example:
+
+Cronbach's Alpha:
+
+Table:
+Construct | Number of Items | Valid N | Cronbach's Alpha | Interpretation
+
+Then provide:
+
+Simple explanation:
+"This result tells us whether the questions within this scale show consistency in this sample."
+
+Academic interpretation:
+"Internal consistency reliability was examined using Cronbach's alpha..."
+
+Correlation:
+
+Table:
+Variables | N | Pearson r | p-value | 95% CI | Interpretation
+
+Then provide a plain-language interpretation and a formal academic interpretation.
+
+IMPORTANT:
+
+All text and numerical results must be generated from the actual analysis output.
+
+Never invent a result to complete a paragraph.
+
+If a calculation cannot be performed, clearly state why.
+
+Do not generate fake participant responses.
+
+Provide a Copy Text button for each interpretation.
+
+Provide an Export Chapter 4 button.
+
+The exported report should use proper academic formatting.
+
+==================================================
+18. SIMPLE EXPLANATION MODE
+==================================================
+
+The entire application should be understandable to a beginner.
+
+Add an explanation area to every statistical analysis page.
+
+For each statistical term explain:
+
+1. What is it?
+2. Why do researchers use it?
+3. How is it calculated?
+4. What does a high or low result mean?
+5. How should I interpret my result?
+6. What should I write in my thesis?
+
+Use very simple English.
+
+Also provide Bangla explanations where practical.
+
+Examples:
+
+Mean:
+"The mean is the average score."
+
+Standard Deviation:
+"Standard deviation tells us how spread out the scores are."
+
+Cronbach's Alpha:
+"Cronbach's Alpha helps us understand whether the questions in a scale work consistently together."
+
+Correlation:
+"Correlation tells us whether two variables tend to change together."
+
+p-value:
+"The p-value helps us judge how compatible the observed result is with the null hypothesis."
+
+Avoid difficult statistical language unless necessary.
+
+When technical terms are used, explain them immediately.
+
+Do not oversimplify statistical conclusions or make inaccurate statements.
+
+==================================================
+19. INTERACTIVE CHARTS AND VISUALIZATIONS
+==================================================
+
+Use a suitable React chart library such as Recharts or another compatible library.
+
+Use interactive charts wherever appropriate.
+
+Provide:
+
+- Bar charts.
+- Horizontal bar charts.
+- Pie charts.
+- Donut charts.
+- Histograms.
+- Scatterplots.
+- Box plots, where supported.
+- Q-Q plots.
+- Correlation heatmaps.
+- Line charts, where meaningful.
+- Data tables.
+
+Chart requirements:
+
+- Show tooltips.
+- Show labels.
+- Show legends where useful.
+- Support responsive layouts.
+- Support filtering.
+- Support selecting variables.
+- Show actual values.
+- Use readable axis labels.
+- Avoid unnecessary decoration.
+- Use accessible color contrast.
+- Make charts understandable to beginners.
+
+Do not create meaningless charts just to increase the number of visuals.
+
+Every chart must communicate a meaningful research result.
+
+==================================================
+20. INTERACTIVE FILTERS
+==================================================
+
+Where appropriate, allow the admin to filter results by:
+
+- Date range.
+- Gender.
+- Age group.
+- Education.
+- Occupation.
+- AI tool.
+- AI usage frequency.
+- AI usage duration.
+- Response status.
+- Included/excluded status.
+
+When filters change:
+
+- Recalculate the relevant statistics.
+- Update tables.
+- Update charts.
+- Update interpretation text.
+- Update valid sample size.
+
+Clearly show the current filter selection.
+
+Show whether an analysis uses all eligible responses or a filtered subgroup.
+
+Do not confuse subgroup results with the full-sample results.
+
+==================================================
+21. EXPORT CENTER
+==================================================
+
+Create a separate Export Center.
+
+Provide:
+
+1. Export Raw Data to CSV.
+2. Export Cleaned Analysis Dataset to CSV.
+3. Export Statistical Tables to Excel.
+4. Export Chapter 4 to PDF.
+5. Export Chapter 4 to DOCX, if feasible.
+6. Export Charts as PNG.
+7. Export Analysis Summary.
+8. Export Analysis Documentation.
+
+The export should include:
+
+- Dataset date/time.
+- Total response count.
+- Valid sample size.
+- Exclusion criteria.
+- Questionnaire version.
+- Scoring rules.
+- Statistical methods.
+- Missing-data handling.
+- Analysis date/time.
+
+Do not export secret fields or private authentication data.
+
+Use appropriate libraries compatible with the existing Vite project.
+
+If a requested export format is not feasible, explain the limitation and provide a working alternative.
+
+==================================================
+22. REPRODUCIBLE ANALYSIS
+==================================================
+
+Every analysis must be reproducible.
+
+The same dataset and same settings must produce the same results.
+
+Create an Analysis Summary that records:
+
+- Analysis run date and time.
+- Dataset version or data snapshot identifier.
+- Number of records retrieved.
+- Number included.
+- Number excluded.
+- Exclusion reasons.
+- Questionnaire version.
+- Item mapping.
+- Reverse-scoring rules.
+- Composite scoring rules.
+- Missing-data handling.
+- Statistical methods.
+- Software/application version.
+
+Do not store only final numbers.
+
+Keep the analysis logic in reusable functions.
+
+Add automated tests for important statistical calculations.
+
+Use known test datasets with expected results to verify the functions.
+
+Where practical, compare selected statistical results with a trusted statistical reference or independent statistical package.
+
+==================================================
+23. STATISTICAL ACCURACY AND VALIDATION
+==================================================
+
+This is an academic research application.
+
+Statistical correctness is more important than visual appearance.
+
+Requirements:
+
+- Use correct formulas.
+- Handle small samples carefully.
+- Handle missing values correctly.
+- Handle constant variables correctly.
+- Handle tied ranks correctly in Spearman correlation.
+- Handle invalid values safely.
+- Avoid division-by-zero errors.
+- Avoid misleading p-values.
+- Use correct degrees of freedom.
+- Use appropriate confidence intervals.
+- Clearly label approximate methods.
+- Do not hide warnings.
+- Do not silently discard records.
+
+For every statistical function, add a simple explanation and test.
+
+Do not implement a statistical formula based only on a guess.
+
+If an advanced calculation is difficult to implement correctly, use a reliable, compatible statistical library rather than writing an unverified approximation.
+
+==================================================
+24. DATABASE AND SECURITY
+==================================================
+
+Use the existing Supabase project.
+
+Preserve the current public questionnaire workflow.
+
+The participant application should continue to have only the permissions it currently needs.
+
+Public participants must not gain access to:
+
+- Other participants' responses.
+- Raw data exports.
+- Statistical reports.
+- Admin pages.
+- Admin credentials.
+
+Admin-only database access must be protected server-side.
+
+Use secure backend functions or Supabase Edge Functions where necessary.
+
+Never place the Supabase service_role key or other secret keys in frontend code.
+
+Never expose secrets in Git or browser bundles.
+
+Use environment variables for secrets.
+
+Check Row Level Security policies carefully.
+
+Do not disable RLS just to make the dashboard work.
+
+Test both public participant access and authenticated admin access.
+
+The admin dashboard must not rely on hiding buttons as its only security mechanism.
+
+==================================================
+25. USER INTERFACE QUALITY
+==================================================
+
+The interface should look like a professional research statistics application.
+
+Design inspiration:
+
+- SPSS-style statistical tables.
+- jamovi-style analysis organization.
+- Modern admin dashboards.
+- Clean academic reporting layouts.
+
+However, keep the interface simpler than traditional statistical software.
+
+Use:
+
+- Clear section headings.
+- Consistent spacing.
+- Readable fonts.
+- Simple icons.
+- Professional colors.
+- Small, understandable cards.
+- Clear tables.
+- Helpful tooltips.
+- Friendly error messages.
+
+Avoid:
+
+- Crowded screens.
+- Huge text.
+- Too many decorative cards.
+- Complicated navigation.
+- Unnecessary animations.
+- Overly technical labels without explanation.
+
+The user should be able to understand what to click next.
+
+==================================================
+26. PERFORMANCE
+==================================================
+
+The application may eventually contain many participant responses.
+
+Therefore:
+
+- Use database pagination for raw data.
+- Avoid downloading unnecessary columns.
+- Fetch only the fields required for each analysis.
+- Avoid recalculating unrelated reports unnecessarily.
+- Use loading indicators.
+- Show clear error messages.
+- Handle network failures.
+- Prevent duplicate requests.
+- Use appropriate caching only where safe.
+- Ensure filtered analyses use the correct dataset.
+
+For small samples, calculations may run in the browser if secure and accurate.
+
+For sensitive data access and large datasets, use secure server-side processing.
+
+==================================================
+27. TESTING REQUIREMENTS
+==================================================
+
+Before declaring the project complete, test:
+
+A. Existing application:
+- Welcome page works.
+- Consent and eligibility work.
+- Questionnaire works.
+- Submission works.
+- Raw answers are saved correctly.
+- Existing response records remain unchanged.
+
+B. Admin:
+- /admin opens login.
+- Valid login works.
+- Invalid login fails.
+- Protected pages reject unauthorized visitors.
+- Logout works.
+- Default password cannot remain active in production.
+
+C. Data:
+- All existing responses are retrieved correctly.
+- Raw item values are preserved.
+- Missing data are identified.
+- Invalid data are identified.
+- Exclusions are transparent.
+
+D. Statistics:
+- Scoring is correct.
+- Mean is correct.
+- Standard deviation is correct.
+- Variance is correct.
+- Cronbach's Alpha is correct.
+- Pearson correlation is correct.
+- Spearman correlation is correct.
+- p-values are correct.
+- Confidence intervals are correct.
+- Tables and charts match the calculations.
+
+E. Export:
+- CSV export works.
+- Excel export works.
+- PDF export works.
+- Exported results match the dashboard.
+
+Do not mark a feature as completed if it is only a visual mockup.
+
+==================================================
+28. IMPLEMENTATION WORKFLOW
+==================================================
+
+Work in small stages.
+
+STAGE 1 — PROJECT AUDIT
+
+Inspect the existing project.
+
+Identify the actual questionnaire structure and database schema.
+
+List existing files and important dependencies.
+
+Identify security risks.
+
+Do not modify anything yet.
+
+STAGE 2 — IMPLEMENTATION PLAN
+
+Prepare a clear plan.
+
+List:
+
+- Files to create.
+- Files to modify.
+- Database changes, if any.
+- New dependencies.
+- Security changes.
+- Testing plan.
+
+STAGE 3 — ADMIN AUTHENTICATION
+
+Implement secure admin authentication and protected routes.
+
+Test it before moving forward.
+
+STAGE 4 — ADMIN LAYOUT
+
+Build the sidebar, topbar, dashboard layout, and navigation.
+
+STAGE 5 — DATA MODULES
+
+Implement raw data viewing, data overview, cleaning, and filtering.
+
+STAGE 6 — SCORING
+
+Implement the scoring engine using the actual questionnaire configuration.
+
+Test the calculations.
+
+STAGE 7 — STATISTICAL MODULES
+
+Implement descriptive statistics, reliability, normality, correlation, and hypothesis testing.
+
+Test the statistical functions independently.
+
+STAGE 8 — CHAPTER 4
+
+Build the automatic Chapter 4 report.
+
+STAGE 9 — CHARTS AND EXPORTS
+
+Implement interactive visualizations and export functionality.
+
+STAGE 10 — FINAL TESTING
+
+Test the entire application.
+
+Verify that existing data collection still works.
+
+Fix errors before declaring completion.
+
+==================================================
+29. IMPORTANT WORKING RULES FOR AI STUDIO
+==================================================
+
+Do not try to generate the entire application in one giant file.
+
+Do not remove working features.
+
+Do not replace real data with sample data.
+
+Do not assume a database column exists without checking the schema.
+
+Do not invent questionnaire items.
+
+Do not invent statistical results.
+
+Do not make unsupported interpretations.
+
+Do not use fake charts.
+
+Do not leave unfinished buttons.
+
+Do not create menu links that lead to blank pages.
+
+Do not silently change database structure.
+
+When editing an existing file, preserve unrelated working code.
+
+When creating a new file, put it in the correct folder.
+
+Keep components reusable.
+
+Use simple comments.
+
+If you need to install a dependency, explain why it is needed.
+
+If a feature cannot be completed safely, explain the limitation rather than pretending it works.
+
+After each stage:
+
+1. Summarize what was changed.
+2. List files created.
+3. List files modified.
+4. Explain any database changes.
+5. Explain how to test the feature.
+6. Mention any remaining work.
+
+==================================================
+30. FINAL EXPECTED RESULT
+==================================================
+
+I want one working application with two major parts:
+
+PART A:
+The existing participant questionnaire and data collection system.
+
+PART B:
+A secure admin dashboard with complete research data analysis.
+
+The admin should be able to open /admin, log in, and access all reports and statistical analyses from a well-organized menu.
+
+The admin should be able to understand:
+
+- What the data contain.
+- Whether the data are clean.
+- How scores are calculated.
+- What each statistical result means.
+- Whether the research hypotheses are supported.
+- What should be written in Chapter 4.
+
+The system should generate accurate calculations, understandable explanations, interactive tables, charts, graphs, and exportable reports using the actual participant data.
+
+The code must remain modular, readable, simple, and easy to maintain.
+
+MOST IMPORTANT FINAL INSTRUCTION:
+
+Start with STAGE 1 — PROJECT AUDIT.
+
+Do not immediately rewrite the application.
+
+First inspect the actual project and report what you found.
+
+Then proceed stage by stage, preserving all existing data and functionality.

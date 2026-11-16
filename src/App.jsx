@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { configured, supabase } from './lib/supabase';
 import { sections } from './data/questions';
 import {
@@ -13,6 +14,7 @@ import {
   buildWithdrawalReceiptText,
   normalizeWithdrawalCode,
 } from './lib/withdrawal';
+import { useAdminAuth } from './hooks/useAdminAuth';
 
 import Navbar from './components/Navbar';
 import ParticipantInfoStep from './components/ParticipantInfoStep';
@@ -25,6 +27,9 @@ import DisclosureStep from './components/DisclosureStep';
 import ReviewStep from './components/ReviewStep';
 import SubmissionSuccessStep from './components/SubmissionSuccessStep';
 import WithdrawResponsePage from './components/WithdrawResponsePage';
+
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 const blank = {
   age_group: '',
@@ -41,7 +46,7 @@ const blank = {
   ai_familiarity: '',
 };
 
-export default function App() {
+function ParticipantSurveyApp() {
   const initialReceipt = loadSessionSubmissionReceipt();
   const initialView =
     typeof window !== 'undefined' && window.location.hash === '#withdraw'
@@ -453,5 +458,36 @@ export default function App() {
         </div>
       )}
     </main>
+  );
+}
+
+function AdminProtectedRoute({ isAuthenticated, children }) {
+  if (!isAuthenticated) {
+    return <Navigate to="/admin" replace />;
+  }
+  return children;
+}
+
+export default function App() {
+  const { session, isAuthenticated, signIn, signOut } = useAdminAuth();
+
+  return (
+    <Routes>
+      <Route path="/" element={<ParticipantSurveyApp />} />
+      <Route
+        path="/admin"
+        element={<AdminLogin isAuthenticated={isAuthenticated} onSignIn={signIn} />}
+      />
+      <Route
+        path="/admin/dashboard/*"
+        element={
+          <AdminProtectedRoute isAuthenticated={isAuthenticated}>
+            <AdminDashboard session={session} onLogout={signOut} />
+          </AdminProtectedRoute>
+        }
+      />
+      <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

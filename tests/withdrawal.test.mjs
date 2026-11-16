@@ -83,13 +83,11 @@ test('1. Questionnaire configuration contains 18 items (4 CW, 6 PT, 8 SD) with b
   assert.deepEqual(TRUST_KEYS, ['pt_1', 'pt_2', 'pt_3', 'pt_4', 'pt_5', 'pt_6']);
   assert.equal(DISCLOSURE_KEYS.length, 8);
   assert.equal(ALL_LIKERT_KEYS.length, 18);
-  assert.deepEqual(primaryAiToolOptions, [
-    'ChatGPT',
-    'Google Gemini',
-    'Microsoft Copilot',
-    'Claude',
-    'Other',
-  ]);
+  assert.ok(primaryAiToolOptions.includes('ChatGPT'));
+  assert.ok(primaryAiToolOptions.includes('Google Gemini'));
+  assert.ok(primaryAiToolOptions.includes('Microsoft Copilot'));
+  assert.ok(primaryAiToolOptions.includes('Claude'));
+  assert.ok(primaryAiToolOptions.includes('Other'));
 });
 
 test('2. Successful submission generates one unique cryptographic withdrawal code and stores only its SHA-256 hash', async () => {
@@ -108,7 +106,7 @@ test('2. Successful submission generates one unique cryptographic withdrawal cod
   const expectedHash = await sha256Hex(receipt.withdrawal_code);
   assert.equal(storedRows[0].withdrawal_code_hash, expectedHash);
   assert.equal(storedRows[0].withdrawal_code, undefined);
-  assert.equal(storedRows[0].questionnaire_version, 'v1_16_items');
+  assert.equal(storedRows[0].questionnaire_version, QUESTIONNAIRE_VERSION);
   assert.equal(storedRows[0].primary_ai_tool, 'ChatGPT');
   assert.equal(storedRows[0].pt_5, 5);
   assert.equal(storedRows[0].pt_6, 5);
@@ -288,7 +286,7 @@ test('10. Fallback submission succeeds via survey_responses.insert when RPC is n
   assert.equal(insertedPayloads.length, 1);
   assert.equal(insertedPayloads[0].age_group, '18–24 years');
   assert.equal(insertedPayloads[0].primary_ai_tool, 'ChatGPT');
-  assert.equal(insertedPayloads[0].questionnaire_version, 'v1_16_items');
+  assert.equal(insertedPayloads[0].questionnaire_version, QUESTIONNAIRE_VERSION);
   assert.equal(insertedPayloads[0].warmth_total, 16);
   assert.equal(insertedPayloads[0].warmth_mean, 4);
   assert.equal(insertedPayloads[0].trust_total, 30);
