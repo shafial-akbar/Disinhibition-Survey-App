@@ -494,6 +494,20 @@ export default function App() {
           </AdminProtectedRoute>
         }
       />
+      <Route
+        path="/supervisor/*"
+        element={
+          <AdminDashboard
+            basePath="/supervisor"
+            isPublicSupervisor
+            session={{
+              username: 'supervisor',
+              role: 'thesis_supervisor',
+              authMode: 'public-supervisor-access',
+            }}
+          />
+        }
+      />
       <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -13,8 +13,7 @@ import {
   Legend,
   ScatterChart,
   Scatter,
-  Line,
-  ComposedChart,
+  ReferenceLine,
 } from 'recharts';
 import { formatApaNoLeadingZero } from '../../services/chapter4/apa7Formatter';
 
@@ -105,6 +104,7 @@ export default function ChartContainer({
               cx="50%"
               cy="50%"
               outerRadius={78}
+              isAnimationActive={false}
               label={({ name, percent }) => `${name} (${(percent * 100).toFixed(1)}%)`}
             >
               {data.map((_, idx) => (
@@ -128,7 +128,13 @@ export default function ChartContainer({
             <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
             <YAxis type="category" dataKey={xKey} width={115} tick={{ fontSize: 11 }} />
             <Tooltip />
-            <Bar dataKey={yKey} fill="#1e3a8a" radius={[0, 3, 3, 0]} name="Count (n)" />
+            <Bar
+              dataKey={yKey}
+              fill="#1e3a8a"
+              radius={[0, 3, 3, 0]}
+              name="Count (n)"
+              isAnimationActive={false}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -136,47 +142,58 @@ export default function ChartContainer({
   }
 
   if (type === 'qq') {
-    const minQ = Math.min(...data.map(d => d.theoretical ?? -2), -2);
-    const maxQ = Math.max(...data.map(d => d.theoretical ?? 2), 2);
-    const linePoints = [
-      { theoretical: minQ, refLine: minQ },
-      { theoretical: maxQ, refLine: maxQ },
-    ];
+    // shapiroWilk.js produces { theoretical, observed, rawValue }
+    const coords = data
+      .flatMap(d => [Number(d.theoretical), Number(d.observed)])
+      .filter(Number.isFinite);
+    const maxAbs = coords.length
+      ? Math.max(2.5, Math.ceil(Math.max(...coords.map(Math.abs)) * 2) / 2)
+      : 3;
 
     return (
       <div style={{ width: '100%', height }}>
         <ResponsiveContainer>
-          <ComposedChart margin={{ top: 12, right: 20, bottom: 20, left: 12 }}>
+          <ScatterChart margin={{ top: 12, right: 24, bottom: 24, left: 12 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis
               type="number"
               dataKey="theoretical"
               name="Theoretical Quantile (z)"
-              domain={['auto', 'auto']}
+              domain={[-maxAbs, maxAbs]}
               tick={{ fontSize: 11 }}
-              label={{ value: 'Theoretical Normal Quantile (z)', position: 'insideBottom', offset: -10, fontSize: 11 }}
+              label={{
+                value: 'Theoretical Normal Quantile (z)',
+                position: 'insideBottom',
+                offset: -12,
+                fontSize: 11,
+              }}
             />
             <YAxis
               type="number"
-              dataKey="observedZ"
-              name="Observed Standardized Score"
-              domain={['auto', 'auto']}
+              dataKey="observed"
+              name="Observed z-Score"
+              domain={[-maxAbs, maxAbs]}
               tick={{ fontSize: 11 }}
               label={{ value: 'Observed z-Score', angle: -90, position: 'insideLeft', fontSize: 11 }}
             />
-            <Tooltip />
-            <Line
-              data={linePoints}
-              type="linear"
-              dataKey="refLine"
+            <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+            <ReferenceLine
+              segment={[
+                { x: -maxAbs, y: -maxAbs },
+                { x: maxAbs, y: maxAbs },
+              ]}
               stroke="#64748b"
+              strokeWidth={1.5}
               strokeDasharray="4 4"
-              dot={false}
-              isAnimationActive={false}
-              name="Normal Reference"
             />
-            <Scatter data={data} fill="#1e3a8a" name="Observed Quantiles" isAnimationActive={false} />
-          </ComposedChart>
+            <Scatter
+              data={data}
+              fill="#1e3a8a"
+              fillOpacity={0.85}
+              name="Observed Quantiles"
+              isAnimationActive={false}
+            />
+          </ScatterChart>
         </ResponsiveContainer>
       </div>
     );
@@ -186,48 +203,59 @@ export default function ChartContainer({
     const xs = data.map(d => Number(d.x)).filter(Number.isFinite);
     const minX = xs.length ? Math.min(...xs) : 1;
     const maxX = xs.length ? Math.max(...xs) : 5;
-    const trendData =
-      regression && Number.isFinite(regression.slope) && Number.isFinite(regression.intercept)
-        ? [
-            { x: minX, trendY: regression.intercept + regression.slope * minX },
-            { x: maxX, trendY: regression.intercept + regression.slope * maxX },
-          ]
-        : [];
+    const hasTrend =
+      regression && Number.isFinite(regression.slope) && Number.isFinite(regression.intercept);
 
     return (
       <div style={{ width: '100%', height }}>
         <ResponsiveContainer>
-          <ComposedChart margin={{ top: 12, right: 24, bottom: 22, left: 12 }}>
+          <ScatterChart margin={{ top: 12, right: 24, bottom: 24, left: 12 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis
               type="number"
               dataKey="x"
+              name={xLabel || 'Predictor'}
               domain={[1, 5]}
               tick={{ fontSize: 11 }}
-              label={{ value: xLabel || 'Predictor (1–5)', position: 'insideBottom', offset: -10, fontSize: 11 }}
+              label={{
+                value: xLabel || 'Predictor (1–5)',
+                position: 'insideBottom',
+                offset: -12,
+                fontSize: 11,
+              }}
             />
             <YAxis
               type="number"
               dataKey="y"
+              name={yLabel || 'Outcome'}
               domain={[1, 5]}
               tick={{ fontSize: 11 }}
-              label={{ value: yLabel || 'Outcome (1–5)', angle: -90, position: 'insideLeft', fontSize: 11 }}
+              label={{
+                value: yLabel || 'Outcome (1–5)',
+                angle: -90,
+                position: 'insideLeft',
+                fontSize: 11,
+              }}
             />
-            <Tooltip />
-            {trendData.length === 2 && (
-              <Line
-                data={trendData}
-                type="linear"
-                dataKey="trendY"
+            <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+            {hasTrend && (
+              <ReferenceLine
+                segment={[
+                  { x: minX, y: regression.intercept + regression.slope * minX },
+                  { x: maxX, y: regression.intercept + regression.slope * maxX },
+                ]}
                 stroke="#0f766e"
                 strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-                name="Linear Fit"
               />
             )}
-            <Scatter data={data} fill="#1e3a8a" name="Participant Score Pair" isAnimationActive={false} />
-          </ComposedChart>
+            <Scatter
+              data={data}
+              fill="#1e3a8a"
+              fillOpacity={0.8}
+              name="Participant Score Pair"
+              isAnimationActive={false}
+            />
+          </ScatterChart>
         </ResponsiveContainer>
       </div>
     );

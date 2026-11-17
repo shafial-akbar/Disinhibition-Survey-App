@@ -25,7 +25,12 @@ import ExportCenter from './reports/ExportCenter';
 import AnalysisSettings from './settings/AnalysisSettings';
 import AdminSettings from './settings/AdminSettings';
 
-export default function AdminDashboard({ session, onLogout }) {
+export default function AdminDashboard({
+  session,
+  onLogout,
+  basePath = '/admin/dashboard',
+  isPublicSupervisor = false,
+}) {
   const location = useLocation();
   const isThesisReportRoute = location.pathname.startsWith('/admin/thesis-report');
 
@@ -76,6 +81,8 @@ export default function AdminDashboard({ session, onLogout }) {
       loading={loading}
       isFiltered={isFiltered}
       snapshotMeta={analysis.snapshotMeta}
+      basePath={basePath}
+      isPublicSupervisor={isPublicSupervisor}
     >
       {loading && rawRows.length === 0 ? (
         <AdminLoading />
@@ -106,7 +113,7 @@ export default function AdminDashboard({ session, onLogout }) {
           <Route path="export" element={<ExportCenter {...sharedProps} />} />
           <Route path="analysis-settings" element={<AnalysisSettings {...sharedProps} />} />
           <Route path="admin-settings" element={<AdminSettings {...sharedProps} />} />
-          <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="*" element={<Navigate to={basePath} replace />} />
         </Routes>
       )}
     </AdminLayout>

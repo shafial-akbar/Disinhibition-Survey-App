@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
-import { ALL_ADMIN_MENU_ITEMS } from '../../config/adminMenuConfig';
+import { getAllAdminMenuItems } from '../../config/adminMenuConfig';
 
 export default function AdminLayout({
   children,
@@ -12,15 +12,23 @@ export default function AdminLayout({
   loading,
   isFiltered,
   snapshotMeta,
+  basePath = '/admin/dashboard',
+  isPublicSupervisor = false,
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
+  const normalizedPathname = location.pathname.replace(/\/+$/, '') || '/';
+  const menuItems = getAllAdminMenuItems(basePath);
   const currentMenu =
-    ALL_ADMIN_MENU_ITEMS.find(item => item.path === location.pathname) ||
-    ALL_ADMIN_MENU_ITEMS[0];
+    menuItems.find(item => item.path === normalizedPathname) ||
+    menuItems[0];
 
-  const breadcrumbs = ['Research Admin', currentMenu?.category || 'DASHBOARD', currentMenu?.label || 'Overview'];
+  const breadcrumbs = [
+    isPublicSupervisor ? 'Supervisor View' : 'Research Admin',
+    currentMenu?.category || 'DASHBOARD',
+    currentMenu?.label || 'Overview',
+  ];
 
   return (
     <div className="admin-shell">
@@ -29,6 +37,8 @@ export default function AdminLayout({
         onClose={() => setMobileMenuOpen(false)}
         onLogout={onLogout}
         username={session?.username}
+        basePath={basePath}
+        isPublicSupervisor={isPublicSupervisor}
       />
       <div className="admin-main">
         <AdminHeader

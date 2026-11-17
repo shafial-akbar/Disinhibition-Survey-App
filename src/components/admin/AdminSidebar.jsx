@@ -22,7 +22,7 @@ import {
   LogOut,
   GraduationCap,
 } from 'lucide-react';
-import { ADMIN_MENU_CATEGORIES } from '../../config/adminMenuConfig';
+import { getAdminMenuCategories } from '../../config/adminMenuConfig';
 
 const ICON_MAP = {
   LayoutDashboard,
@@ -45,7 +45,16 @@ const ICON_MAP = {
   Settings,
 };
 
-export default function AdminSidebar({ isOpen, onClose, onLogout, username }) {
+export default function AdminSidebar({
+  isOpen,
+  onClose,
+  onLogout,
+  username,
+  basePath = '/admin/dashboard',
+  isPublicSupervisor = false,
+}) {
+  const menuCategories = getAdminMenuCategories(basePath);
+
   return (
     <>
       <div
@@ -65,12 +74,12 @@ export default function AdminSidebar({ isOpen, onClose, onLogout, username }) {
         </div>
 
         <nav className="admin-sidebar-nav">
-          {ADMIN_MENU_CATEGORIES.map(group => (
+          {menuCategories.map(group => (
             <div className="admin-nav-group" key={group.category}>
               <div className="admin-nav-category">{group.category}</div>
               {group.items.map(item => {
                 const Icon = ICON_MAP[item.icon] || LayoutDashboard;
-                const end = item.path === '/admin/dashboard';
+                const end = item.path === basePath;
                 return (
                   <NavLink
                     key={item.id}
@@ -91,17 +100,25 @@ export default function AdminSidebar({ isOpen, onClose, onLogout, username }) {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <div style={{ fontSize: 12, color: '#475569' }}>
-            Signed in as <strong>{username || 'admin'}</strong>
-          </div>
-          <button
-            type="button"
-            className="admin-btn admin-btn-danger"
-            style={{ width: '100%', justifyContent: 'center' }}
-            onClick={onLogout}
-          >
-            <LogOut size={14} /> Logout
-          </button>
+          {isPublicSupervisor ? (
+            <div style={{ fontSize: 12, color: '#475569' }}>
+              Supervisor Access · <strong>Public View</strong>
+            </div>
+          ) : (
+            <>
+              <div style={{ fontSize: 12, color: '#475569' }}>
+                Signed in as <strong>{username || 'admin'}</strong>
+              </div>
+              <button
+                type="button"
+                className="admin-btn admin-btn-danger"
+                style={{ width: '100%', justifyContent: 'center' }}
+                onClick={onLogout}
+              >
+                <LogOut size={14} /> Logout
+              </button>
+            </>
+          )}
         </div>
       </aside>
     </>

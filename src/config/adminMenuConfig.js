@@ -60,3 +60,40 @@ export const ADMIN_MENU_CATEGORIES = [
 export const ALL_ADMIN_MENU_ITEMS = ADMIN_MENU_CATEGORIES.flatMap(group =>
   group.items.map(item => ({ ...item, category: group.category }))
 );
+
+/**
+ * Resolves a menu item path for a given dashboard basePath (e.g. '/admin/dashboard' or '/supervisor').
+ */
+export function resolveAdminMenuPath(itemPath, basePath = '/admin/dashboard') {
+  const normalizedBase = (basePath || '/admin/dashboard').replace(/\/+$/, '');
+  if (normalizedBase === '/admin/dashboard') {
+    return itemPath;
+  }
+  if (itemPath === '/admin/dashboard') {
+    return normalizedBase;
+  }
+  if (itemPath.startsWith('/admin/dashboard/')) {
+    return `${normalizedBase}${itemPath.slice('/admin/dashboard'.length)}`;
+  }
+  if (itemPath.startsWith('/admin/')) {
+    return `${normalizedBase}${itemPath.slice('/admin'.length)}`;
+  }
+  return itemPath;
+}
+
+export function getAdminMenuCategories(basePath = '/admin/dashboard') {
+  return ADMIN_MENU_CATEGORIES.map(group => ({
+    ...group,
+    items: group.items.map(item => ({
+      ...item,
+      path: resolveAdminMenuPath(item.path, basePath),
+    })),
+  }));
+}
+
+export function getAllAdminMenuItems(basePath = '/admin/dashboard') {
+  return getAdminMenuCategories(basePath).flatMap(group =>
+    group.items.map(item => ({ ...item, category: group.category }))
+  );
+}
+
